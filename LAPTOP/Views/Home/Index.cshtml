@@ -1,0 +1,62 @@
+﻿@model IEnumerable<LAPTOP.Models.SanPham>
+
+<!-- ==== SLIDER ==== -->
+<div id="homeCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="2"></button>
+    </div>
+
+    <div class="carousel-inner rounded-4 shadow-lg">
+        <div class="carousel-item active">
+            <img src="~/img/logo1.jpg" class="d-block w-100" alt="Chào mừng tân sinh viên 2025">
+        </div>
+        <div class="carousel-item">
+            <img src="~/img/logo2.jpg" class="d-block w-100" alt="HP Omnibook Ultra Flip">
+        </div>
+        <div class="carousel-item">
+            <img src="~/img/logo3.jpg" class="d-block w-100" alt="G15 Gaming">
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon custom-arrow" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon custom-arrow" aria-hidden="true"></span>
+    </button>
+</div>
+
+<!-- ==== THANH LỌC HÃNG ==== -->
+<div class="container mt-5 text-center">
+    <h4 class="fw-bold text-uppercase text-primary mb-3">Lọc theo hãng laptop</h4>
+    <div class="d-flex justify-content-center flex-wrap gap-2">
+        <a asp-action="Index" class="btn @(ViewBag.HangChon == null ? "btn-primary" : "btn-outline-primary")">Tất cả</a>
+        <a asp-action="Index" asp-route-hang="Dell" class="btn @(ViewBag.HangChon == "Dell" ? "btn-primary" : "btn-outline-primary")">Dell</a>
+        <a asp-action="Index" asp-route-hang="HP" class="btn @(ViewBag.HangChon == "HP" ? "btn-primary" : "btn-outline-primary")">HP</a>
+        <a asp-action="Index" asp-route-hang="Asus" class="btn @(ViewBag.HangChon == "Asus" ? "btn-primary" : "btn-outline-primary")">Asus</a>
+        <a asp-action="Index" asp-route-hang="Acer" class="btn @(ViewBag.HangChon == "Acer" ? "btn-primary" : "btn-outline-primary")">Acer</a>
+        <a asp-action="Index" asp-route-hang="Lenovo" class="btn @(ViewBag.HangChon == "Lenovo" ? "btn-primary" : "btn-outline-primary")">Lenovo</a>
+    </div>
+</div>
+
+<!-- ==== DANH SÁCH LAPTOP ==== -->
+<div class="container mt-4">
+    <h2 class="text-center mb-4 fw-bold text-danger">💻 LAPTOP NỔI BẬT</h2>
+    <div class="row">
+        @foreach (var sp in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm h-100">
+                    <img src="~/images/@sp." class="card-img-top" alt="@sp.TenSp style="height:200px; object-fit:cover;">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">@sp.TenSp</h6>
+                        <p class="text-danger fw-bold">@string.Format("{0:N0} ₫", sp.Gia)</p>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
