@@ -1,56 +1,67 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LAPTOP</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/LAPTOP.styles.css" asp-append-version="true" />
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LAPTOP</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+    <!-- HEADER TRÊN CÙNG -->
+    <header class="bg-danger text-white py-2 shadow-sm">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="~/img/Logo-full.png" alt="Logo" height="45" class="me-2" />
+                <h4 class="m-0 fw-bold">LAPTOP SHOP</h4>
             </div>
-        </nav>
+            <form class="d-flex flex-grow-1 mx-3" asp-controller="SanPham" asp-action="TimKiem">
+                <input class="form-control me-2" type="search" placeholder="Nhập tên hoặc model laptop..." name="keyword" />
+                <button class="btn btn-dark" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+            <div class="text-end">
+                <div class="fw-bold">📞 Hotline: 0896598433</div>
+                <small>8 Hoàng Văn Thái, Phường Tân Mỹ, TpHCM</small>
+            </div>
+        </div>
     </header>
-    <div class="container">
+
+    <!-- THANH MENU ĐEN - LỌC THEO HÃNG -->
+    <nav class="bg-dark py-2">
+        <div class="container text-center">
+            <a class="btn btn-outline-light btn-sm mx-1 my-1" asp-controller="SanPham" asp-action="Index">Tất cả</a>
+            <a class="btn btn-outline-light btn-sm mx-1 my-1" asp-controller="SanPham" asp-action="LocTheoHang" asp-route-hang="Dell">Dell</a>
+            <a class="btn btn-outline-light btn-sm mx-1 my-1" asp-controller="SanPham" asp-action="LocTheoHang" asp-route-hang="HP">HP</a>
+            <a class="btn btn-outline-light btn-sm mx-1 my-1" asp-controller="SanPham" asp-action="LocTheoHang" asp-route-hang="Asus">Asus</a>
+            <a class="btn btn-outline-light btn-sm mx-1 my-1" asp-controller="SanPham" asp-action="LocTheoHang" asp-route-hang="Acer">Acer</a>
+            <a class="btn btn-outline-light btn-sm mx-1 my-1" asp-controller="SanPham" asp-action="LocTheoHang" asp-route-hang="Lenovo">Lenovo</a>
+        </div>
+    </nav>
+
+    <!-- PHẦN NỘI DUNG CHÍNH -->
+    <div class="container my-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - LAPTOP - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+    <!-- CHÂN TRANG -->
+    <footer class="bg-light border-top text-center py-3">
+        <small>&copy; 2025 - LAPTOP SHOP | <a asp-controller="Home" asp-action="Privacy">Chính sách bảo mật</a></small>
     </footer>
+
+    <!-- Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
