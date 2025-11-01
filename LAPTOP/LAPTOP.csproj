@@ -13,5 +13,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+git add .
+git commit -m "Update layout and logo"
+git push origin main
+
 
 </Project>
