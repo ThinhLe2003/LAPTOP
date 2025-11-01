@@ -16,6 +16,8 @@ namespace LAPTOP.Models
         public string? QueQuan { get; set; }
         public string? DiaChi { get; set; }
         public bool? GioiTinh { get; set; }
+        public string? Email { get; set; }
+        public string? PasswordHash { get; set; }
 
         public virtual ICollection<HoaDon> HoaDons { get; set; }
     }
