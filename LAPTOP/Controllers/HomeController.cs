@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks; // <-- Thêm thư viện này
+using Microsoft.EntityFrameworkCore; // <-- Thêm thư viện này
 
 namespace LAPTOP.Controllers
 {
@@ -17,8 +19,8 @@ namespace LAPTOP.Controllers
             _context = context;
         }
 
-        // Trang chủ có thể lọc theo hãng
-        public IActionResult Index(string hang)
+        // Chuyển từ "IActionResult" sang "async Task<IActionResult>"
+        public async Task<IActionResult> Index(string hang)
         {
             var laptops = _context.SanPhams.AsQueryable();
 
@@ -28,7 +30,9 @@ namespace LAPTOP.Controllers
                 ViewBag.HangChon = hang;
             }
 
-            return View(laptops.ToList());
+            // Dùng ToListAsync() thay vì ToList()
+            var model = await laptops.ToListAsync();
+            return View(model);
         }
 
         public IActionResult Privacy() => View();
