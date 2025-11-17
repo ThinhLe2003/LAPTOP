@@ -11,6 +11,29 @@ builder.Services.AddDbContext<STORELAPTOPContext>(options =>
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        // TỰ THAY "ApplicationDbContext" BẰNG TÊN DbContext CỦA BẠN
+        // Tên DbContext này nằm trong thư mục "Data" hoặc "Models" của bạn
+        var context = services.GetRequiredService<STORELAPTOPContext>();
+
+        // Dòng này sẽ tự động chạy migration để tạo bảng
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Một lỗi xảy ra khi đang migration database.");
+        // Log lỗi này để bạn có thể xem trên "Logs" của Render
+    }
+}
+// --- KẾT THÚC CODE THÊM ---
+
+// Các dòng code cũ của bạn (ví dụ: app.UseStaticFiles();...)
+app.Run();
 
 // 🔹 Cấu hình pipeline
 if (!app.Environment.IsDevelopment())
