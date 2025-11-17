@@ -212,3 +212,40 @@ footer a {
     max-width: 100%;
     border-radius: 5px;
 }
+/* Custom CSS cho Navbar */
+.bottom-navbar {
+    background-color: #343a40; /* Màu nền đen nhạt */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.category-dropdown-link {
+    background-color: #f7a307; /* Màu vàng cam nổi bật */
+    color: #212529 !important; /* Màu chữ đen */
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 0;
+}
+
+    .category-dropdown-link:hover {
+        background-color: #e09405; /* Màu vàng cam đậm hơn khi hover */
+    }
+
+.dropdown-megamenu .dropdown-menu {
+    border-top: 3px solid #f7a307; /* Thêm đường viền màu vàng cam */
+    padding: 15px;
+}
+
+    .dropdown-megamenu .dropdown-menu a {
+        display: block;
+        padding: 5px 0;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .dropdown-megamenu .dropdown-menu h6 {
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #444;
+    }

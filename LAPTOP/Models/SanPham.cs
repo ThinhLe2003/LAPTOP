@@ -50,7 +50,8 @@ namespace LAPTOP.Models
         public bool IsFeatured { get; set; }
 
         // --- CÁC LIÊN KẾT (Relationships) ---
-        public virtual ChiTietSanPham ChiTietSanPham { get; set; } = null!;
+        public virtual ChiTietSanPham? ChiTietSanPham { get; set; }
+
         public virtual ICollection<ChiTietHoaDon> ChiTietHoaDons { get; set; }
 
         // Liên kết khóa ngoại mới đến LoaiSanPham
