@@ -28,19 +28,23 @@ namespace LAPTOP.Controllers
         // GET: SanPhamsAdmin/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.SanPhams == null)
+            if (id == null)
             {
-                return NotFound();
+                return NotFound(); // Trả về lỗi 404 nếu không có mã sản phẩm
             }
 
+            // 1. Tìm sản phẩm dựa trên MaSp. Phải Include cả ChiTietSanPham.
             var sanPham = await _context.SanPhams
-                .Include(s => s.LoaiSanPham)
+                .Include(s => s.ChiTietSanPham) // Rất quan trọng: Bao gồm cả thông số kỹ thuật
+                .Include(s => s.LoaiSanPham)    // Bao gồm cả tên loại sản phẩm
                 .FirstOrDefaultAsync(m => m.MaSp == id);
+
             if (sanPham == null)
             {
-                return NotFound();
+                return NotFound(); // Trả về lỗi 404 nếu không tìm thấy sản phẩm
             }
 
+            // 2. Chuyển đối tượng sản phẩm sang View
             return View(sanPham);
         }
 

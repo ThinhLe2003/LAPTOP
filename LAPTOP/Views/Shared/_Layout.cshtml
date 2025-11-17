@@ -1,6 +1,6 @@
-﻿@{
-    // Giữ nguyên Layout = null nếu đây là file Layout chính
-    // Nếu đây là file _Layout.cshtml trong Views/Shared, bạn có thể bỏ dòng này
+﻿@* File: Views/Shared/_Layout.cshtml *@
+@{
+    // Nếu file này là file Layout chính, bạn có thể bỏ dòng này
     // Layout = null;
 }
 <!DOCTYPE html>
@@ -17,88 +17,91 @@
 </head>
 
 <body>
-    <header class="bg-danger text-white py-2 shadow-sm">
-        <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
-            <a asp-controller="Home" asp-action="Index" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                <img src="~/img/Logo-full.png" alt="Logo" height="45" />
-            </a>
+    <div class="fixed-header-wrapper">
 
-            <form class="d-flex flex-grow-1 mx-3" asp-controller="SanPham" asp-action="TimKiem" style="max-width: 600px;">
-                <input class="form-control" type="search" placeholder="Gõ tên hoặc model máy để tìm..." name="keyword" />
-                <button class="btn btn-light" type="submit" style="margin-left: -1px;"><i class="bi bi-search"></i></button>
-            </form>
+        <header class="bg-danger text-white py-2 shadow-sm">
+            <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
-            <div class="d-flex align-items-center">
-                <div class="text-end me-3">
-                    <div class="fw-bold">📞 Hotline: 0896598433</div>
-                    <small>🕑 T.Gian làm việc: 08:30 - 19:30</small>
-                </div>
-                <a asp-controller="GioHang" asp-action="Index" class="btn btn-outline-light d-flex align-items-center">
-                    <i class="bi bi-cart fs-4 me-2"></i>
-                    <span class="badge bg-light text-danger rounded-pill">0</span>
+                <a asp-controller="Home" asp-action="Index" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <img src="~/img/Logo-full.png" alt="Logo" height="45" />
                 </a>
+
+                <form class="d-flex flex-grow-1 mx-3" asp-controller="SanPham" asp-action="TimKiem" style="max-width: 600px;">
+                    <input class="form-control" type="search" placeholder="Gõ tên hoặc model máy để tìm..." name="keyword" />
+                    <button class="btn btn-light" type="submit" style="margin-left: -1px;"><i class="bi bi-search"></i></button>
+                </form>
+
+                <div class="d-flex align-items-center">
+                    <div class="text-end me-3">
+                        <div class="fw-bold">📞 Hotline: 0896598433</div>
+                        <small>🕑 T.Gian làm việc: 08:30 - 19:30</small>
+                    </div>
+                    <a asp-controller="GioHang" asp-action="Index" class="btn btn-outline-light d-flex align-items-center">
+                        <i class="bi bi-cart fs-4 me-2"></i>
+                        <span class="badge bg-light text-danger rounded-pill">0</span>
+                    </a>
+                </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <nav class="navbar navbar-expand-lg bottom-navbar py-0">
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <nav class="navbar navbar-expand-lg bottom-navbar py-0">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav">
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav">
 
-                    <li class="nav-item dropdown dropdown-megamenu me-3">
-                        <a class="nav-link dropdown-toggle text-dark fw-bold category-dropdown-link" href="#" id="megamenuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-list me-2 fs-5"></i> DANH MỤC SẢN PHẨM
-                        </a>
+                        <li class="nav-item dropdown dropdown-megamenu me-3">
+                            <a class="nav-link dropdown-toggle text-dark fw-bold category-dropdown-link" href="#" id="megamenuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-list me-2 fs-5"></i> DANH MỤC SẢN PHẨM
+                            </a>
 
-                        <div class="dropdown-menu shadow-lg" aria-labelledby="megamenuDropdown" style="width: 800px;">
-                            <div class="row">
+                            <div class="dropdown-menu shadow-lg" aria-labelledby="megamenuDropdown" style="width: 800px;">
+                                <div class="row">
 
-                                <div class="col-lg-3 col-md-6">
-                                    <h6>THEO HÃNG SẢN XUẤT</h6>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Dell">Laptop Dell</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="HP">Laptop HP</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Asus">Laptop Asus</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Lenovo">Laptop Lenovo</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Acer">Laptop Acer</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Macbook">Macbook</a>
-                                </div>
+                                    <div class="col-lg-3 col-md-6">
+                                        <h6>THEO HÃNG SẢN XUẤT</h6>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Dell">Laptop Dell</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="HP">Laptop HP</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Asus">Laptop Asus</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Lenovo">Laptop Lenovo</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Acer">Laptop Acer</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Macbook">Macbook</a>
+                                    </div>
 
-                                <div class="col-lg-3 col-md-6">
-                                    <h6>THEO NHU CẦU SỬ DỤNG</h6>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="Gaming">Laptop Gaming</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="VanPhong">Laptop Văn phòng</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="DoHoa">Laptop Đồ họa</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="MongNhe">Laptop Mỏng nhẹ</a>
-                                </div>
+                                    <div class="col-lg-3 col-md-6">
+                                        <h6>THEO NHU CẦU SỬ DỤNG</h6>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="Gaming">Laptop Gaming</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="VanPhong">Laptop Văn phòng</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="DoHoa">Laptop Đồ họa</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="MongNhe">Laptop Mỏng nhẹ</a>
+                                    </div>
 
-                                <div class="col-lg-3 col-md-6">
-                                    <h6>THEO KHOẢNG GIÁ</h6>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="5-10">Từ 5 - 10 triệu</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="10-20">Từ 10 - 20 triệu</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="20-30">Từ 20 - 30 triệu</a>
-                                    <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="tren-30">Trên 30 triệu</a>
-                                </div>
+                                    <div class="col-lg-3 col-md-6">
+                                        <h6>THEO KHOẢNG GIÁ</h6>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="5-10">Từ 5 - 10 triệu</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="10-20">Từ 10 - 20 triệu</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="20-30">Từ 20 - 30 triệu</a>
+                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="tren-30">Trên 30 triệu</a>
+                                    </div>
 
-                                <div class="col-lg-3 col-md-6 d-none d-lg-block">
-                                    <h6>SẢN PHẨM MỚI NHẤT</h6>
-                                    <a href="#">
-                                        <img src="~/img/banner-hp-omni.jpg" alt="Quảng cáo" class="promo-image" />
-                                    </a>
+                                    <div class="col-lg-3 col-md-6 d-none d-lg-block">
+                                        <h6>SẢN PHẨM MỚI NHẤT</h6>
+                                        <a href="#">
+                                            <img src="~/img/banner-hp-omni.jpg" alt="Quảng cáo" class="promo-image" />
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>
-
-                </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
     <div class="container-fluid bg-light" style="min-height: 70vh;">
         <main role="main" class="py-3">
             @RenderBody()

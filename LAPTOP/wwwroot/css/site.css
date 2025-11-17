@@ -2,6 +2,7 @@
     font-family: 'Segoe UI', sans-serif;
     background-color: #f8f9fa;
     margin: 0;
+    padding-top: 110px;
     padding: 0;
 }
 
@@ -214,7 +215,7 @@ footer a {
 }
 /* Custom CSS cho Navbar */
 .bottom-navbar {
-    background-color: #343a40; /* Màu nền đen nhạt */
+    background-color: #343a40;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -249,3 +250,9 @@ footer a {
         font-weight: bold;
         color: #444;
     }
+.fixed-header-wrapper {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1030; /* Đảm bảo nó luôn nằm trên cùng */
+}

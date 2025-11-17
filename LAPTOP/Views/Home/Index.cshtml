@@ -119,11 +119,15 @@
                             <del class="text-muted small">@string.Format("{0:N0} ₫", sp.Gia)</del>
                             <p class="text-danger fw-bold fs-5 mb-0">@string.Format("{0:N0} ₫", sp.GiaKhuyenMai)</p>
                         </div>
-                        
-                        <a asp-controller="SanPham" 
-                           asp-action="Details" 
-                           asp-route-id="@sp.MaSp" 
-                           class="btn btn-outline-primary btn-sm mt-auto">Xem chi tiết</a>
+
+                        <a asp-controller="SanPham"
+                           asp-action="Details"
+                           asp-route-id="@sp.MaSp"
+                           class="card-link" style="text-decoration:none; color:inherit;">
+
+                            <div class="card shadow-sm h-100 product-card">
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
