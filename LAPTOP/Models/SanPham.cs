@@ -46,6 +46,8 @@ namespace LAPTOP.Models
         public int SoLuongTon { get; set; }     // <-- Thêm từ script
         public decimal? GiaKhuyenMai { get; set; } // <-- Thêm từ script
         public int? MaLoai { get; set; }          // <-- Thêm từ script
+        [Display(Name = "Nổi bật")]
+        public bool IsFeatured { get; set; }
 
         // --- CÁC LIÊN KẾT (Relationships) ---
         public virtual ChiTietSanPham ChiTietSanPham { get; set; } = null!;
