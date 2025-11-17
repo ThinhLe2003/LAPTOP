@@ -12,21 +12,8 @@ builder.Services.AddControllersWithViews();
 builder.WebHost.UseUrls("http://*:" + Environment.GetEnvironmentVariable("PORT"));
 var app = builder.Build();
 
-// 🔹 Khối code Migrate (Đặt ở đây là đúng)
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<STORELAPTOPContext>();
-        context.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Một lỗi xảy ra khi đang migration database.");
-    }
-}
+
+
 
 // 🔹 Cấu hình pipeline (Phải nằm sau Migrate và trước app.Run())
 if (!app.Environment.IsDevelopment())
