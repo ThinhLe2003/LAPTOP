@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LAPTOP.Models;
@@ -21,27 +17,8 @@ namespace LAPTOP.Controllers
         // GET: ChiTietSanPhamsAdmin
         public async Task<IActionResult> Index()
         {
-            var sTORELAPTOPContext = _context.ChiTietSanPhams.Include(c => c.MaSpNavigation);
-            return View(await sTORELAPTOPContext.ToListAsync());
-        }
-
-        // GET: ChiTietSanPhamsAdmin/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null || _context.ChiTietSanPhams == null)
-            {
-                return NotFound();
-            }
-
-            var chiTietSanPham = await _context.ChiTietSanPhams
-                .Include(c => c.MaSpNavigation)
-                .FirstOrDefaultAsync(m => m.MaSp == id);
-            if (chiTietSanPham == null)
-            {
-                return NotFound();
-            }
-
-            return View(chiTietSanPham);
+            var chiTiets = _context.ChiTietSanPhams.Include(c => c.MaSpNavigation);
+            return View(await chiTiets.ToListAsync());
         }
 
         // GET: ChiTietSanPhamsAdmin/Create
@@ -52,93 +29,92 @@ namespace LAPTOP.Controllers
         }
 
         // POST: ChiTietSanPhamsAdmin/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaSp,Ram,Vga,ManHinh,Cpu,KichThuoc,MauSac,HeDieuHanh")] ChiTietSanPham chiTietSanPham)
+        public async Task<IActionResult> Create([Bind("MaSp,Ram,Vga,ManHinh,Cpu,KichThuoc,MauSac,HeDieuHanh")] ChiTietSanPham chiTiet)
         {
-            ModelState.Remove("MaSpNavigation");
-            if (ModelState.IsValid)
+            ModelState.Remove("MaSpNavigation"); // bỏ validate navigation
+
+            if (!ModelState.IsValid)
             {
-                _context.Add(chiTietSanPham);
-                await _context.SaveChangesAsync();  
-                return RedirectToAction(nameof(Index));
+                ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTiet.MaSp);
+                return View(chiTiet);
             }
-            ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTietSanPham.MaSp);
-            return View(chiTietSanPham);
+
+            // ✅ Kiểm tra sản phẩm tồn tại trên host
+            var sp = await _context.SanPhams
+                .FirstOrDefaultAsync(s => s.MaSp.Trim().ToUpper() == chiTiet.MaSp.Trim().ToUpper());
+
+            if (sp == null)
+            {
+                ModelState.AddModelError("MaSp", "Sản phẩm không tồn tại!");
+                ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTiet.MaSp);
+                return View(chiTiet);
+            }
+
+            chiTiet.MaSp = sp.MaSp; // chỉ set FK
+            _context.ChiTietSanPhams.Add(chiTiet);
+            await _context.SaveChangesAsync();
+
+            // Redirect về Details sản phẩm
+            return RedirectToAction("Details", "SanPham", new { id = chiTiet.MaSp });
         }
 
         // GET: ChiTietSanPhamsAdmin/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null || _context.ChiTietSanPhams == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var chiTietSanPham = await _context.ChiTietSanPhams.FindAsync(id);
-            if (chiTietSanPham == null)
-            {
-                return NotFound();
-            }
-            ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTietSanPham.MaSp);
-            return View(chiTietSanPham);
+            var chiTiet = await _context.ChiTietSanPhams.FindAsync(id);
+            if (chiTiet == null) return NotFound();
+
+            ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTiet.MaSp);
+            return View(chiTiet);
         }
 
         // POST: ChiTietSanPhamsAdmin/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaSp,Ram,Vga,ManHinh,Cpu,KichThuoc,MauSac,HeDieuHanh")] ChiTietSanPham chiTietSanPham)
+        public async Task<IActionResult> Edit(string id, [Bind("MaSp,Ram,Vga,ManHinh,Cpu,KichThuoc,MauSac,HeDieuHanh")] ChiTietSanPham chiTiet)
         {
-            if (id != chiTietSanPham.MaSp)
-            {
-                return NotFound();
-            }
+            if (id != chiTiet.MaSp) return NotFound();
+
+            ModelState.Remove("MaSpNavigation");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(chiTietSanPham);
+                    _context.Update(chiTiet);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ChiTietSanPhamExists(chiTietSanPham.MaSp))
-                    {
+                    if (!_context.ChiTietSanPhams.Any(e => e.MaSp == chiTiet.MaSp))
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Details", "SanPham", new { id = chiTiet.MaSp });
             }
-            ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTietSanPham.MaSp);
-            return View(chiTietSanPham);
+
+            ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTiet.MaSp);
+            return View(chiTiet);
         }
 
         // GET: ChiTietSanPhamsAdmin/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null || _context.ChiTietSanPhams == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var chiTietSanPham = await _context.ChiTietSanPhams
+            var chiTiet = await _context.ChiTietSanPhams
                 .Include(c => c.MaSpNavigation)
                 .FirstOrDefaultAsync(m => m.MaSp == id);
-            if (chiTietSanPham == null)
-            {
-                return NotFound();
-            }
 
-            return View(chiTietSanPham);
+            if (chiTiet == null) return NotFound();
+
+            return View(chiTiet);
         }
 
         // POST: ChiTietSanPhamsAdmin/Delete/5
@@ -146,23 +122,14 @@ namespace LAPTOP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.ChiTietSanPhams == null)
+            var chiTiet = await _context.ChiTietSanPhams.FindAsync(id);
+            if (chiTiet != null)
             {
-                return Problem("Entity set 'STORELAPTOPContext.ChiTietSanPhams'  is null.");
+                _context.ChiTietSanPhams.Remove(chiTiet);
+                await _context.SaveChangesAsync();
             }
-            var chiTietSanPham = await _context.ChiTietSanPhams.FindAsync(id);
-            if (chiTietSanPham != null)
-            {
-                _context.ChiTietSanPhams.Remove(chiTietSanPham);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
-        private bool ChiTietSanPhamExists(string id)
-        {
-          return (_context.ChiTietSanPhams?.Any(e => e.MaSp == id)).GetValueOrDefault();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

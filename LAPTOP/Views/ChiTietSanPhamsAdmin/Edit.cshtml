@@ -1,61 +1,53 @@
-@model LAPTOP.Models.ChiTietSanPham
+﻿@model LAPTOP.Models.ChiTietSanPham
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa Chi Tiết Sản Phẩm";
 }
 
-<h1>Edit</h1>
+<h2>@ViewData["Title"]</h2>
 
-<h4>ChiTietSanPham</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MaSp" />
-            <div class="form-group">
-                <label asp-for="Ram" class="control-label"></label>
-                <input asp-for="Ram" class="form-control" />
-                <span asp-validation-for="Ram" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Vga" class="control-label"></label>
-                <input asp-for="Vga" class="form-control" />
-                <span asp-validation-for="Vga" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ManHinh" class="control-label"></label>
-                <input asp-for="ManHinh" class="form-control" />
-                <span asp-validation-for="ManHinh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cpu" class="control-label"></label>
-                <input asp-for="Cpu" class="form-control" />
-                <span asp-validation-for="Cpu" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="KichThuoc" class="control-label"></label>
-                <input asp-for="KichThuoc" class="form-control" />
-                <span asp-validation-for="KichThuoc" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MauSac" class="control-label"></label>
-                <input asp-for="MauSac" class="form-control" />
-                <span asp-validation-for="MauSac" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HeDieuHanh" class="control-label"></label>
-                <input asp-for="HeDieuHanh" class="form-control" />
-                <span asp-validation-for="HeDieuHanh" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="MaSp"/>
+
+    <div class="mb-3">
+        <label asp-for="Cpu" class="form-label">CPU</label>
+        <input asp-for="Cpu" class="form-control"/>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="mb-3">
+        <label asp-for="Ram" class="form-label">RAM</label>
+        <input asp-for="Ram" class="form-control"/>
+    </div>
 
+    <div class="mb-3">
+        <label asp-for="Vga" class="form-label">VGA</label>
+        <input asp-for="Vga" class="form-control"/>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ManHinh" class="form-label">Màn hình</label>
+        <input asp-for="ManHinh" class="form-control"/>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="HeDieuHanh" class="form-label">Hệ điều hành</label>
+        <input asp-for="HeDieuHanh" class="form-control"/>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="KichThuoc" class="form-label">Kích thước</label>
+        <input asp-for="KichThuoc" class="form-control"/>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MauSac" class="form-label">Màu sắc</label>
+        <input asp-for="MauSac" class="form-control"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
