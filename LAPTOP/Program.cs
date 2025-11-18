@@ -33,6 +33,7 @@ if (!builder.Environment.IsDevelopment())
     // 2. Thêm kiểm tra null để an toàn
     if (!string.IsNullOrEmpty(redisConnectionString))
     {
+        // Sửa lỗi parsing bằng ConfigurationOptions
         var config = ConfigurationOptions.Parse(redisConnectionString);
         config.AbortOnConnectFail = false;
         var redis = ConnectionMultiplexer.Connect(config);
