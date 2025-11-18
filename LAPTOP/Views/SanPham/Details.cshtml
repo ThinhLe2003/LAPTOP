@@ -1,0 +1,88 @@
+﻿@* File: Views/SanPham/Details.cshtml *@
+@model LAPTOP.Models.SanPham
+
+@{
+    ViewData["Title"] = Model.TenSp; // Đặt tiêu đề trang là Tên Sản Phẩm
+}
+
+<div class="container mt-4">
+    <div class="bg-white p-4 rounded shadow-sm">
+        <div class="row">
+
+            <div class="col-lg-5">
+                <img src="@Model.HinhAnh" class="img-fluid rounded border" alt="@Model.TenSp">
+            </div>
+
+            <div class="col-lg-7">
+                <h2 class="fw-bold text-danger">@Model.TenSp</h2>
+                <p class="text-muted">Mã SP: @Model.MaSp | Loại: @Model.LoaiSanPham?.TenLoai</p>
+
+                <hr>
+
+                <div class="mb-3">
+                    <span class="fs-5 text-muted me-2">Giá cũ:</span>
+                    <del class="fs-4 text-muted">@string.Format("{0:N0} ₫", Model.Gia)</del>
+                </div>
+                <div class="p-3 bg-light-danger rounded border border-danger">
+                    <span class="fs-5 fw-bold">Giá khuyến mãi:</span>
+
+                    <h3 class="text-danger fw-bold mb-0">@string.Format("{0:N0} ₫", Model.GiaKhuyenMai)</h3>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <a asp-controller="GioHang" asp-action="AddToCart" asp-route-id="@Model.MaSp" class="btn btn-danger btn-lg fw-bold">
+                        <i class="bi bi-cart-plus-fill me-2"></i> THÊM VÀO GIỎ HÀNG
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row">
+            <div class="col-12">
+                <h3 class="fw-bold mb-3">Thông Số Kỹ Thuật</h3>
+
+                @if (Model.ChiTietSanPham != null)
+                {
+                    <table class="table table-striped table-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="width: 30%;">CPU</th>
+                                <td>@Model.ChiTietSanPham.Cpu</td>
+                            </tr>
+                            <tr>
+                                <th>RAM</th>
+                                <td>@Model.ChiTietSanPham.Ram</td>
+                            </tr>
+                            <tr>
+                                <th>VGA (Card Đồ Họa)</th>
+                                <td>@Model.ChiTietSanPham.Vga</td>
+                            </tr>
+                            <tr>
+                                <th>Màn Hình</th>
+                                <td>@Model.ChiTietSanPham.ManHinh</td>
+                            </tr>
+                            <tr>
+                                <th>Kích Thước</th>
+                                <td>@Model.ChiTietSanPham.KichThuoc</td>
+                            </tr>
+                            <tr>
+                                <th>Màu Sắc</th>
+                                <td>@Model.ChiTietSanPham.MauSac</td>
+                            </tr>
+                            <tr>
+                                <th>Hệ Điều Hành</th>
+                                <td>@Model.ChiTietSanPham.HeDieuHanh</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">Thông số chi tiết của sản phẩm này đang được cập nhật. Vui lòng quay lại sau.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
