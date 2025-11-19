@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LAPTOP.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace LAPTOP.Controllers
@@ -47,19 +48,40 @@ namespace LAPTOP.Controllers
         }
 
         // Hiển thị form tạo chi tiết sản phẩm
+        // GET: ChiTietSanPhamsAdmin/Create
         public IActionResult Create()
         {
-            ViewBag.SanPhams = _context.SanPhams.ToList();
+            // Lấy tất cả sản phẩm để hiển thị trong dropdown
+            var listSanPham = _context.SanPhams
+                .Select(s => new { s.MaSp, s.TenSp }) // chỉ lấy ID và Tên
+                .ToList();
+
+            ViewBag.MaSp = new SelectList(listSanPham, "MaSp", "TenSp"); // gửi sang View
             return View();
         }
 
-        // Xử lý tạo chi tiết sản phẩm
+        // POST: ChiTietSanPhamsAdmin/Create
         [HttpPost]
-        public IActionResult Create(ChiTietSanPham chiTiet)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ChiTietSanPham chiTiet)
         {
-            _context.ChiTietSanPhams.Add(chiTiet);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
+            // Loại bỏ property navigation không nhận input
+            ModelState.Remove("MaSpNavigation");
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(chiTiet);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+
+            // Nếu submit lỗi, vẫn cần load lại dropdown
+            var listSanPham = _context.SanPhams
+                .Select(s => new { s.MaSp, s.TenSp })
+                .ToList();
+            ViewBag.MaSp = new SelectList(listSanPham, "MaSp", "TenSp", chiTiet.MaSp);
+
+            return View(chiTiet);
         }
 
         // Hiển thị form sửa chi tiết sản phẩm
