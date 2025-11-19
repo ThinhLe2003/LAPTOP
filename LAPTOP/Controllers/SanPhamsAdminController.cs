@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using LAPTOP.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LAPTOP.Controllers
 {
@@ -18,176 +16,94 @@ namespace LAPTOP.Controllers
             _context = context;
         }
 
-        // GET: SanPhamsAdmin
-        public async Task<IActionResult> Index()
+        // Hiển thị danh sách sản phẩm
+        public IActionResult Index()
         {
-            var sTORELAPTOPContext = _context.SanPhams.Include(s => s.LoaiSanPham);
-            return View(await sTORELAPTOPContext.ToListAsync());
+            var dsSanPham = _context.SanPhams.ToList();
+            return View(dsSanPham);
         }
 
-        // GET: SanPhamsAdmin/Details/5
-        public async Task<IActionResult> Details(string id)
+        // Hiển thị chi tiết sản phẩm
+        public IActionResult Details(string id)
         {
-            if (id == null)
-            {
-                return NotFound(); // Trả về lỗi 404 nếu không có mã sản phẩm
-            }
+            if (id == null) return NotFound();
 
-            // 1. Tìm sản phẩm dựa trên MaSp. Phải Include cả ChiTietSanPham.
-            var sanPham = await _context.SanPhams
-                .Include(s => s.ChiTietSanPham) // Rất quan trọng: Bao gồm cả thông số kỹ thuật
-                .Include(s => s.LoaiSanPham)    // Bao gồm cả tên loại sản phẩm
-                .FirstOrDefaultAsync(m => m.MaSp == id);
+            var sp = _context.SanPhams.FirstOrDefault(s => s.MaSp == id);
+            if (sp == null) return NotFound();
 
-            if (sanPham == null)
-            {
-                return NotFound(); // Trả về lỗi 404 nếu không tìm thấy sản phẩm
-            }
-
-            // 2. Chuyển đối tượng sản phẩm sang View
-            return View(sanPham);
+            return View(sp);
         }
 
-        // GET: SanPhamsAdmin/Create
-        // GET: SanPhamsAdmin/Create
+        // Hiển thị form tạo sản phẩm
         public IActionResult Create()
         {
-            // --- THÊM DÒNG NÀY ---
-            // Nó sẽ lấy TẤT CẢ LoaiSanPham (từ database) và gửi sang View
-            ViewData["MaLoai"] = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai");
-
-            // --- DÒNG CŨ CỦA BẠN ---
             return View();
         }
 
-        // POST: SanPhamsAdmin/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Xử lý tạo sản phẩm
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SanPham sanPham)
+        public IActionResult Create(SanPham sp)
         {
-            // Tự sinh MaSp
-            sanPham.MaSp = Guid.NewGuid().ToString().Substring(0, 8);
+            sp.MaSp = Guid.NewGuid().ToString().Substring(0, 8);
+            _context.SanPhams.Add(sp);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
-            // Remove các property không có dữ liệu từ form
-            ModelState.Remove("MaSp");
-            ModelState.Remove("ChiTietSanPham");
+        // Hiển thị form sửa sản phẩm
+        public IActionResult Edit(string id)
+        {
+            var sp = _context.SanPhams.FirstOrDefault(s => s.MaSp == id);
+            if (sp == null) return NotFound();
 
-            if (ModelState.IsValid)
-            {
-                _context.SanPhams.Add(sanPham);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            //ViewBag.MaLoai để dropdown chọn loại sản phẩm hoạt động.
+            ViewBag.MaLoai = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai", sp.MaLoai);
 
-            // Nếu ModelState invalid, trả lại View
-            ViewBag.MaLoai = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
-            return View(sanPham);
+            return View(sp);
         }
 
 
-
-
-        // GET: SanPhamsAdmin/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null || _context.SanPhams == null)
-            {
-                return NotFound();
-            }
-
-            var sanPham = await _context.SanPhams.FindAsync(id);
-            if (sanPham == null)
-            {
-                return NotFound();
-            }
-            ViewData["MaLoai"] = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
-            return View(sanPham);
-        }
-
-        // POST: SanPhamsAdmin/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Xử lý sửa sản phẩm
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, SanPham sanPham)
+        public IActionResult Edit(SanPham sp)
         {
-            if (id != sanPham.MaSp)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                ViewBag.MaLoai = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai", sp.MaLoai);
+                return View(sp);
             }
 
-            // Bỏ validate cho property không có input trong form
-            ModelState.Remove("ChiTietSanPham");
+            var spOld = _context.SanPhams.FirstOrDefault(s => s.MaSp == sp.MaSp);
+            if (spOld == null) return NotFound();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(sanPham);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SanPhamExists(sanPham.MaSp))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
+            spOld.TenSp = sp.TenSp;
+            spOld.Gia = sp.Gia;
+            spOld.SoLuongTon = sp.SoLuongTon;
+            spOld.MaLoai = sp.MaLoai;
 
-            ViewBag.MaLoai = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
-            return View(sanPham);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
-
-        // GET: SanPhamsAdmin/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        // Hiển thị form xóa sản phẩm
+        public IActionResult Delete(string id)
         {
-            if (id == null || _context.SanPhams == null)
-            {
-                return NotFound();
-            }
-
-            var sanPham = await _context.SanPhams
-                .Include(s => s.LoaiSanPham)
-                .FirstOrDefaultAsync(m => m.MaSp == id);
-            if (sanPham == null)
-            {
-                return NotFound();
-            }
-
-            return View(sanPham);
+            var sp = _context.SanPhams.FirstOrDefault(s => s.MaSp == id);
+            if (sp == null) return NotFound();
+            return View(sp);
         }
 
-        // POST: SanPhamsAdmin/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        // Xử lý xóa sản phẩm
+        [HttpPost]
+        public IActionResult DeleteConfirmed(string id)
         {
-            if (_context.SanPhams == null)
+            var sp = _context.SanPhams.FirstOrDefault(s => s.MaSp == id);
+            if (sp != null)
             {
-                return Problem("Entity set 'STORELAPTOPContext.SanPhams'  is null.");
+                _context.SanPhams.Remove(sp);
+                _context.SaveChanges();
             }
-            var sanPham = await _context.SanPhams.FindAsync(id);
-            if (sanPham != null)
-            {
-                _context.SanPhams.Remove(sanPham);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool SanPhamExists(string id)
-        {
-          return (_context.SanPhams?.Any(e => e.MaSp == id)).GetValueOrDefault();
+            return RedirectToAction("Index");
         }
     }
 }
