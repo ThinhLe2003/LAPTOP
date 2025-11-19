@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LAPTOP.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace LAPTOP.Controllers
 {
@@ -17,10 +18,22 @@ namespace LAPTOP.Controllers
         // GET: ChiTietSanPhamsAdmin
         public async Task<IActionResult> Index()
         {
-            var chiTiets = _context.ChiTietSanPhams.Include(c => c.MaSpNavigation);
-            return View(await chiTiets.ToListAsync());
+            var list = await _context.ChiTietSanPhams.ToListAsync();
+            return View(list);
         }
 
+        //DETAILS-XEM CHI TIET
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null) return NotFound();
+
+          var chiTiet= await _context.ChiTietSanPhams
+                .Include(x=> x.MaSpNavigation)
+                .FirstOrDefaultAsync(x => x.MaSp == id);
+            if (chiTiet == null) return NotFound();
+            return View(chiTiet);
+        }
+        // CREATE - THEM MOI
         // GET: ChiTietSanPhamsAdmin/Create
         public IActionResult Create()
         {
@@ -31,35 +44,21 @@ namespace LAPTOP.Controllers
         // POST: ChiTietSanPhamsAdmin/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaSp,Ram,Vga,ManHinh,Cpu,KichThuoc,MauSac,HeDieuHanh")] ChiTietSanPham chiTiet)
+        public async Task<IActionResult> Create(ChiTietSanPham chiTiet)
         {
-            ModelState.Remove("MaSpNavigation"); // bỏ validate navigation
+            ModelState.Remove("MaSpNavigation");
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTiet.MaSp);
-                return View(chiTiet);
+                _context.Add(chiTiet);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
-
-            // ✅ Kiểm tra sản phẩm tồn tại trên host
-            var sp = await _context.SanPhams
-                .FirstOrDefaultAsync(s => s.MaSp.Trim().ToUpper() == chiTiet.MaSp.Trim().ToUpper());
-
-            if (sp == null)
-            {
-                ModelState.AddModelError("MaSp", "Sản phẩm không tồn tại!");
                 ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTiet.MaSp);
-                return View(chiTiet);
-            }
-
-            chiTiet.MaSp = sp.MaSp; // chỉ set FK
-            _context.ChiTietSanPhams.Add(chiTiet);
-            await _context.SaveChangesAsync();
-
-            // Redirect về Details sản phẩm
-            return RedirectToAction("Details", "SanPham", new { id = chiTiet.MaSp });
+            return View(chiTiet);
         }
 
+        // EDIT - CHINH SUA
         // GET: ChiTietSanPhamsAdmin/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -68,40 +67,30 @@ namespace LAPTOP.Controllers
             var chiTiet = await _context.ChiTietSanPhams.FindAsync(id);
             if (chiTiet == null) return NotFound();
 
+            // Load danh sách sản phẩm vào ComboBox
             ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTiet.MaSp);
+
             return View(chiTiet);
         }
 
         // POST: ChiTietSanPhamsAdmin/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaSp,Ram,Vga,ManHinh,Cpu,KichThuoc,MauSac,HeDieuHanh")] ChiTietSanPham chiTiet)
+        public async Task<IActionResult> Edit(string id ,ChiTietSanPham chiTiet)
         {
-            if (id != chiTiet.MaSp) return NotFound();
 
             ModelState.Remove("MaSpNavigation");
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(chiTiet);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.ChiTietSanPhams.Any(e => e.MaSp == chiTiet.MaSp))
-                        return NotFound();
-                    else
-                        throw;
-                }
-
-                return RedirectToAction("Details", "SanPham", new { id = chiTiet.MaSp });
+                _context.Update(chiTiet);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
-
-            ViewData["MaSp"] = new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTiet.MaSp);
+            ViewData["MaSp"]= new SelectList(_context.SanPhams, "MaSp", "TenSp", chiTiet.MaSp);
             return View(chiTiet);
         }
+
 
         // GET: ChiTietSanPhamsAdmin/Delete/5
         public async Task<IActionResult> Delete(string id)
@@ -122,14 +111,13 @@ namespace LAPTOP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var chiTiet = await _context.ChiTietSanPhams.FindAsync(id);
+          var chiTiet= await _context.ChiTietSanPhams.FindAsync(id);
             if (chiTiet != null)
             {
-                _context.ChiTietSanPhams.Remove(chiTiet);
+                _context.Remove(chiTiet);
                 await _context.SaveChangesAsync();
             }
-
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
     }
 }

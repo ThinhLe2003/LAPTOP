@@ -7,7 +7,9 @@ namespace LAPTOP.Models
 {
     public partial class STORELAPTOPContext : DbContext
     {
-    
+        public STORELAPTOPContext()
+        {
+        }
 
         public STORELAPTOPContext(DbContextOptions<STORELAPTOPContext> options)
             : base(options)

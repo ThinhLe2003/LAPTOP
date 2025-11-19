@@ -1,7 +1,13 @@
 ﻿@model LAPTOP.Models.ChiTietSanPham
 
 @{
-    ViewData["Title"] = "Chi tiết sản phẩm " + Model.MaSp;
+    ViewData["Title"] = "Chi tiết sản phẩm " ;
+}
+@if (Model == null)
+{
+    <h2>Không tìm thấy sản phẩm nào!</h2>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    return;
 }
 
 <h2>@ViewData["Title"]</h2>
