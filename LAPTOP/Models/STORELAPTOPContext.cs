@@ -23,7 +23,7 @@ namespace LAPTOP.Models
         public virtual DbSet<NhanVien> NhanViens { get; set; } = null!;
         public virtual DbSet<SanPham> SanPhams { get; set; } = null!;
 
-        // <-- THÊM MỚI (1): Khai báo DbSet cho bảng mới
+        // <-- THÊM MỚI (1)
         public virtual DbSet<LoaiSanPham> LoaiSanPhams { get; set; } = null!;
 
 
@@ -33,7 +33,7 @@ namespace LAPTOP.Models
         {
             modelBuilder.Entity<ChiTietHoaDon>(entity =>
             {
-                // ... (Phần này giữ nguyên, không thay đổi) ...
+                
                 entity.HasKey(e => new { e.MaHd, e.MaSp })
                     .HasName("PK__ChiTietH__F557F661D651EF0C");
                 entity.ToTable("ChiTietHoaDon");
@@ -62,7 +62,7 @@ namespace LAPTOP.Models
 
             modelBuilder.Entity<ChiTietSanPham>(entity =>
             {
-                // ... (Phần này giữ nguyên, không thay đổi) ...
+                
                 entity.HasKey(e => e.MaSp)
                     .HasName("PK__ChiTietS__2725081C6CDEC7DD");
                 entity.ToTable("ChiTietSanPham");
@@ -93,7 +93,7 @@ namespace LAPTOP.Models
 
             modelBuilder.Entity<HoaDon>(entity =>
             {
-                // ... (Phần này giữ nguyên, không thay đổi) ...
+               
                 entity.HasKey(e => e.MaHd)
                     .HasName("PK__HoaDon__2725A6E0F36B725F");
                 entity.ToTable("HoaDon");
@@ -125,13 +125,13 @@ namespace LAPTOP.Models
 
             modelBuilder.Entity<KhachHang>(entity =>
             {
-                // --- CẬP NHẬT (2): Thêm 2 cột mới cho KhachHang ---
+                
                 entity.HasKey(e => e.MaKh)
                     .HasName("PK__KhachHan__2725CF1E3F3DD519");
 
                 entity.ToTable("KhachHang");
 
-                // Thêm ràng buộc UNIQUE cho cột Email
+               
                 entity.HasIndex(e => e.Email).HasName("UQ_KhachHang_Email").IsUnique();
 
                 entity.Property(e => e.MaKh)
@@ -140,7 +140,7 @@ namespace LAPTOP.Models
                     .HasColumnName("MaKH")
                     .IsFixedLength();
 
-                // (Giữ các cột cũ)
+                
                 entity.Property(e => e.DiaChi)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -156,7 +156,7 @@ namespace LAPTOP.Models
                     .HasMaxLength(50)
                     .HasColumnName("TenKH");
 
-                // <-- THÊM MỚI: Cấu hình cho 2 cột mới
+                
                 entity.Property(e => e.Email)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -168,7 +168,7 @@ namespace LAPTOP.Models
 
             modelBuilder.Entity<NhanVien>(entity =>
             {
-                // ... (Phần này giữ nguyên, không thay đổi) ...
+                
                 entity.HasKey(e => e.MaNv)
                     .HasName("PK__NhanVien__2725D70A8F9AB923");
                 entity.ToTable("NhanVien");
@@ -197,7 +197,7 @@ namespace LAPTOP.Models
 
             modelBuilder.Entity<SanPham>(entity =>
             {
-                // --- CẬP NHẬT (3): Thêm mối quan hệ cho SanPham ---
+                
                 entity.HasKey(e => e.MaSp)
                     .HasName("PK__SanPham__2725081CA3079783");
 
@@ -209,7 +209,7 @@ namespace LAPTOP.Models
                     .HasColumnName("MaSP")
                     .IsFixedLength();
 
-                // (Đây là các cột bạn đã thêm - Rất tốt)
+                
                 entity.Property(e => e.HinhAnh).HasMaxLength(255);
                 entity.Property(e => e.GiaKhuyenMai).HasColumnType("decimal(18, 2)");
                 entity.Property(e => e.SoLuongTon);
@@ -218,14 +218,14 @@ namespace LAPTOP.Models
                     .HasMaxLength(50)
                     .HasColumnName("TenSP");
 
-                // <-- THÊM MỚI: Cấu hình khóa ngoại MaLoai
+                
                 entity.HasOne(d => d.LoaiSanPham)
                       .WithMany(p => p.SanPhams)
                       .HasForeignKey(d => d.MaLoai)
-                      .HasConstraintName("FK_SanPham_LoaiSanPham"); // Tên ràng buộc ta đã tạo
+                      .HasConstraintName("FK_SanPham_LoaiSanPham"); 
             });
 
-            // <-- THÊM MỚI (4): Cấu hình cho bảng LoaiSanPham mới
+            
             modelBuilder.Entity<LoaiSanPham>(entity =>
             {
                 entity.HasKey(e => e.MaLoai);
