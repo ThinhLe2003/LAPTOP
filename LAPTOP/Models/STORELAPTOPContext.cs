@@ -62,6 +62,7 @@ namespace LAPTOP.Models
 
             modelBuilder.Entity<ChiTietSanPham>(entity =>
             {
+
                 
                 entity.HasKey(e => e.MaSp)
                     .HasName("PK__ChiTietS__2725081C6CDEC7DD");

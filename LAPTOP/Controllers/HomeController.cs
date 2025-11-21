@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks; // <-- Thêm thư viện này
-using Microsoft.EntityFrameworkCore; // <-- Thêm thư viện này
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore; 
 
 namespace LAPTOP.Controllers
 {
@@ -30,7 +30,7 @@ namespace LAPTOP.Controllers
                 ViewBag.HangChon = hang;
             }
 
-            // Dùng ToListAsync() thay vì ToList()
+           
             var model = await laptops.ToListAsync();
             return View(model);
         }

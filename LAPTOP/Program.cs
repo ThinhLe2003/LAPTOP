@@ -22,6 +22,10 @@ builder.Services.AddDbContext<STORELAPTOPContext>(options =>
 // 🔹 Thêm dịch vụ MVC
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSession();
+
+
+
 
 // --- CẤU HÌNH REDIS (CHỈ CHẠY KHI TRÊN RENDER/PRODUCTION) ---
 // Chúng ta bọc nó trong câu lệnh 'if' này
@@ -59,6 +63,12 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
+
+
+
+app.UseSession();
+
+
 
 // 🔹 Cấu hình route mặc định
 app.MapControllerRoute(

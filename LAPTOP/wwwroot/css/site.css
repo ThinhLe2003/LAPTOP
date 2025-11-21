@@ -256,3 +256,48 @@ footer a {
     width: 100%;
     z-index: 1030; /* Đảm bảo nó luôn nằm trên cùng */
 }
+/* EXCLUSIVE THEME CUSTOMIZATION */
+
+/* Hover effect for Category Cards */
+.hover-danger:hover {
+    background-color: #db4444 !important;
+    color: white !important;
+    border-color: #db4444 !important;
+}
+
+    .hover-danger:hover i,
+    .hover-danger:hover span {
+        color: white !important;
+    }
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+/* Product Card Hover Effects */
+.product-card {
+    transition: all 0.3s ease;
+}
+
+/* Ẩn nút Add to Cart xuống dưới */
+.add-to-cart-btn {
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    opacity: 0; /* Ẩn đi để tránh click nhầm */
+}
+
+/* Khi hover vào card, trượt nút lên */
+.product-card:hover .add-to-cart-btn {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Hiện icon mắt/tim khi hover */
+.product-card .position-absolute.top-0.end-0 {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .position-absolute.top-0.end-0 {
+    opacity: 1;
+}

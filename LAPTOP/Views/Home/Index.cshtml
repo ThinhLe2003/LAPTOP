@@ -1,136 +1,201 @@
 ﻿@model IEnumerable<LAPTOP.Models.SanPham>
+    @{
+    ViewData["Title"] = " LaptopShop - Laptop Chính Hãng Giá Tốt Nhất";
 
-@{
-    ViewData["Title"] = "Trang chủ";
-    // Lấy các giá trị lọc từ ViewBag để làm nổi bật nút đã chọn
-    var hangChon = ViewBag.HangChon;
-    var giaChon = ViewBag.GiaChon;
-    var nhuCauChon = ViewBag.NhuCauChon;
-}
+    // 1. Flash Sale: Ưu tiên sản phẩm IsFeatured = true, sau đó là có khuyến mãi
+    var flashSaleProducts = Model
+        .Where(p => p.IsFeatured)
+        .Take(8)
+        .ToList();
 
-<div class="container mt-3">
-    <div class="row g-3">
-        <div class="col-lg-8">
-            <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="0" class="active"></button>
-                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="1"></button>
-                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="2"></button>
+    // Nếu không đủ hoặc không có IsFeatured, lấy thêm sản phẩm có khuyến mãi
+    if (flashSaleProducts.Count < 8)
+    {
+        var more = Model
+            .Where(p => !p.IsFeatured && p.GiaKhuyenMai.HasValue && p.GiaKhuyenMai < p.Gia)
+            .Take(8 - flashSaleProducts.Count);
+        flashSaleProducts.AddRange(more);
+    }
+
+    // Nếu vẫn không đủ → lấy bất kỳ sản phẩm nào
+    if (flashSaleProducts.Count < 8)
+    {
+        var remain = Model
+            .Where(p => !flashSaleProducts.Select(x => x.MaSp).Contains(p.MaSp))
+            .Take(8 - flashSaleProducts.Count);
+        flashSaleProducts.AddRange(remain);
+    }
+
+    // 2. Bán chạy & Mới nhất: Vì không có LuotBan/NgayNhap → lấy theo thứ tự MaSp giảm dần (mới thêm sau lên đầu)
+    var otherProducts = Model
+        .OrderByDescending(p => p.MaSp)
+        .Take(16)
+        .ToList();
+
+    var bestSelling = otherProducts.Take(8).ToList();
+    var newArrivals = otherProducts.Skip(8).Take(8).ToList();
+    }
+
+   
+
+    <!-- Hero Banner -->
+    <section class="container my-5">
+        <div class="row g-0 align-items-center">
+            <!-- Sidebar Danh Mục (Desktop only) -->
+            <div class="col-lg-2 d-none d-lg-block">
+                <div class="bg-light p-4 rounded-3 shadow-sm">
+                    <h6 class="fw-bold mb-3 text-uppercase small text-danger">Danh Mục Nổi Bật</h6>
+                    <ul class="list-unstyled">
+                        <li class="py-2"><a asp-controller="SanPham" asp-action="Index" asp-route-maLoai="1" class="text-dark text-decoration-none"> Laptop Gaming</a></li>
+                        <li class="py-2"><a asp-controller="SanPham" asp-action="Index" asp-route-maLoai="2" class="text-dark text-decoration-none"> Laptop Văn Phòng</a></li>
+                        <li class="py-2"><a asp-controller="SanPham" asp-action="Index" asp-route-maLoai="3" class="text-dark text-decoration-none"> Laptop Đồ Họa</a></li>
+                        <li class="py-2"><a asp-controller="SanPham" asp-action="Index" asp-route-maLoai="4" class="text-dark text-decoration-none"> Laptop Sinh Viên</a></li>
+                        <li class="py-2 text-danger fw-bold"><a asp-controller="SanPham" asp-action="Index" asp-route-maLoai="5" class="text-danger text-decoration-none"> MacBook Chính Hãng</a></li>
+                        <li class="py-2"><a asp-controller="SanPham" asp-action="Index" class="text-dark text-decoration-none"> Surface & 2-in-1</a></li>
+                    </ul>
                 </div>
-                <div class="carousel-inner rounded-3 shadow-sm">
-                    <div class="carousel-item active">
-                        <img src="~/img/logo1.jpg" class="d-block w-100" alt="Chào mừng tân sinh viên 2025">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="~/img/logo2.jpg" class="d-block w-100" alt="Sale mỗi ngày">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="~/img/logo3.jpg" class="d-block w-100" alt="Banner 3">
+            </div>
+
+            <!-- Banner Chính -->
+            <div class="col-lg-10 ps-lg-4">
+                <div class="position-relative rounded-4 overflow-hidden shadow-lg" style="height: 520px;">
+                    <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=1600&h=900&fit=crop"
+                         class="w-100 h-100" style="object-fit: cover;" alt="Laptop Sale 2025">
+                    <div class="position-absolute top-50 start-50 translate-middle text-center text-white px-4">
+                        <h1 class="display-3 fw-bold">BLACK FRIDAY 2025</h1>
+                        <h2 class="display-5 fw-bold text-warning">GIẢM TỚI 8.000.000₫</h2>
+                        <p class="fs-3 mb-4">MacBook M4 • RTX 50 Series • Dell XPS • ASUS ROG</p>
+                        <a asp-controller="SanPham" asp-action="Index" class="btn btn-danger btn-lg px-5 py-3 rounded-pill shadow">
+                            MUA NGAY
+                        </a>
                     </div>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                </button>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="d-flex flex-column">
-                <a href="#" class="mb-3">
-                    <img src="~/img/hp-overbook.jpg" alt="HP Omnibook" class="img-fluid rounded-3 shadow-sm" />
-                </a>
-                <a href="#">
-                    <img src="~/img/dell-g15.jpg" alt="G15 Gaming" class="img-fluid rounded-3 shadow-sm" />
-                </a>
+    </section>
+
+    <!-- Flash Sale Section -->
+    <section id="flash-sale" class="container my-5">
+        <div class="d-flex align-items-end justify-content-between mb-4">
+            <div class="d-flex align-items-end">
+                <div class="bg-danger text-white px-4 py-2 rounded me-3 fw-bold fs-5">Today's</div>
+                <h2 class="fw-bold fs-1 mb-0">Flash Sale</h2>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="container mt-3">
-    <div class="row g-3">
-        <div class="col-md-3 col-6">
-            <a asp-action="Index" asp-route-nhuCau="Gaming" asp-route-hang="Asus"><img src="~/img/tuf.jpg" alt="TUF Gaming" class="img-fluid rounded-3 shadow-sm" /></a>
-        </div>
-        <div class="col-md-3 col-6">
-            <a asp-action="Index" asp-route-nhuCau="Gaming" asp-route-hang="Lenovo"><img src="~/img/Lenovo-Gaming.jpg" alt="Lenovo Gaming" class="img-fluid rounded-3 shadow-sm" /></a>
-        </div>
-        <div class="col-md-3 col-6">
-            <a asp-action="Index" asp-route-nhuCau="Gaming"><img src="~/img/gaming.jpg" alt="Gaming" class="img-fluid rounded-3 shadow-sm" /></a>
-        </div>
-        <div class="col-md-3 col-6">
-            <a asp-action="Index" asp-route-nhuCau="Gaming" asp-route-hang="HP"><img src="~/img/victus-gaming.jpg" alt="HP Victus" class="img-fluid rounded-3 shadow-sm" /></a>
-        </div>
-    </div>
-</div>
-
-<div class="container mt-4">
-    <div class="bg-white p-3 rounded-3 shadow-sm">
-        <h5 class="fw-bold mb-3 text-uppercase">Tìm kiếm nhanh</h5>
-
-        <h6 class="text-muted">Theo hãng</h6>
-        <div class="d-flex flex-wrap gap-2 mb-3">
-            <a asp-action="Index" class="btn @(hangChon == null ? "btn-dark" : "btn-outline-secondary") btn-sm">Tất cả</a>
-            <a asp-action="Index" asp-route-hang="Dell" class="btn @(hangChon == "Dell" ? "btn-dark" : "btn-outline-secondary") btn-sm">Dell</a>
-            <a asp-action="Index" asp-route-hang="HP" class="btn @(hangChon == "HP" ? "btn-dark" : "btn-outline-secondary") btn-sm">HP</a>
-            <a asp-action="Index" asp-route-hang="Asus" class="btn @(hangChon == "Asus" ? "btn-dark" : "btn-outline-secondary") btn-sm">Asus</a>
-            <a asp-action="Index" asp-route-hang="Acer" class="btn @(hangChon == "Acer" ? "btn-dark" : "btn-outline-secondary") btn-sm">Acer</a>
-            <a asp-action="Index" asp-route-hang="Lenovo" class="btn @(hangChon == "Lenovo" ? "btn-dark" : "btn-outline-secondary") btn-sm">Lenovo</a>
+            <div id="countdown-timer" class="d-flex align-items-center fs-4"></div>
         </div>
 
-        <h6 class="text-muted">Theo giá</h6>
-        <div class="d-flex flex-wrap gap-2 mb-3">
-            <a asp-action="Index" asp-route-gia="5-10" class="btn @(giaChon == "5-10" ? "btn-dark" : "btn-outline-secondary") btn-sm">Từ 5-10 triệu</a>
-            <a asp-action="Index" asp-route-gia="10-20" class="btn @(giaChon == "10-20" ? "btn-dark" : "btn-outline-secondary") btn-sm">Từ 10-20 triệu</a>
-            <a asp-action="Index" asp-route-gia="20-30" class="btn @(giaChon == "20-30" ? "btn-dark" : "btn-outline-secondary") btn-sm">Từ 20-30 triệu</a>
-            <a asp-action="Index" asp-route-gia="tren-30" class="btn @(giaChon == "tren-30" ? "btn-dark" : "btn-outline-secondary") btn-sm">Trên 30 triệu</a>
-        </div>
-
-        <h6 class="text-muted">Theo nhu cầu</h6>
-        <div class="d-flex flex-wrap gap-2">
-            <a asp-action="Index" asp-route-nhuCau="HocSinh" class="btn @(nhuCauChon == "HocSinh" ? "btn-dark" : "btn-outline-secondary") btn-sm">Học sinh, Sinh viên</a>
-            <a asp-action="Index" asp-route-nhuCau="VanPhong" class="btn @(nhuCauChon == "VanPhong" ? "btn-dark" : "btn-outline-secondary") btn-sm">Văn phòng</a>
-            <a asp-action="Index" asp-route-nhuCau="Gaming" class="btn @(nhuCauChon == "Gaming" ? "btn-dark" : "btn-outline-secondary") btn-sm">Gaming</a>
-            <a asp-action="Index" asp-route-nhuCau="DoHoa" class="btn @(nhuCauChon == "DoHoa" ? "btn-dark" : "btn-outline-secondary") btn-sm">Đồ họa</a>
-            <a asp-action="Index" asp-route-nhuCau="MongNhe" class="btn @(nhuCauChon == "MongNhe" ? "btn-dark" : "btn-outline-secondary") btn-sm">Mỏng, nhẹ</a>
-            <a asp-action="Index" asp-route-nhuCau="DoanhNhan" class="btn @(nhuCauChon == "DoanhNhan" ? "btn-dark" : "btn-outline-secondary") btn-sm">Doanh nhân</a>
-        </div>
-    </div>
-</div>
-
-<div class="container mt-4">
-    <h2 class="text-center mb-4 fw-bold text-danger">💻 LAPTOP NỔI BẬT</h2>
-    <div class="row">
-        @foreach (var sp in Model)
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
+            @foreach (var sp in flashSaleProducts)
         {
-            <div class="col-lg-3 col-md-4 col-6 mb-4">
-                <div class="card shadow-sm h-100 product-card">
+            var giaHienThi = sp.GiaKhuyenMai.HasValue && sp.GiaKhuyenMai > 0 ? sp.GiaKhuyenMai.Value : sp.Gia ?? 0;
+            var giamGia = sp.GiaKhuyenMai.HasValue && sp.GiaKhuyenMai < sp.Gia
+                ? Math.Round((double)((sp.Gia.Value - sp.GiaKhuyenMai.Value) / sp.Gia.Value * 100))
+                : 0;
 
-                    <img src="@sp.HinhAnh"
-                         class="card-img-top"
-                         alt="@sp.TenSp"
-                         style="height:200px; object-fit:contain; padding: 10px;">
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm hover-lift position-relative overflow-hidden rounded-3">
+                    @if (giamGia > 0)
+                    {
+                    <span class="position-absolute top-0 start-0 bg-danger text-white px-3 py-1 small fw-bold z-3">
+                        -@giamGia%
+                    </span>
+                    }
+                    @if (sp.IsFeatured)
+                    {
+                    <span class="position-absolute top-0 end-0 bg-warning text-dark px-3 py-1 small fw-bold z-3">
+                        HOT
+                    </span>
+                    }
 
-                    <div class="card-body text-center d-flex flex-column">
-                        <h6 class="card-title flex-grow-1">@sp.TenSp</h6>
-                        <div class="d-flex flex-column align-items-center">
-                            <del class="text-muted small">@string.Format("{0:N0} ₫", sp.Gia)</del>
-                            <p class="text-danger fw-bold fs-5 mb-0">@string.Format("{0:N0} ₫", sp.GiaKhuyenMai)</p>
+                    <div class="text-center bg-light p-4">
+                        <img src="@sp.HinhAnh" class="img-fluid" style="height: 180px; object-fit: contain;" alt="@sp.TenSp">
+                    </div>
+
+                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                        <div>
+                            <h6 class="fw-bold mb-2" style="height: 50px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                @sp.TenSp
+                            </h6>
+                            <p class="text-danger fw-bold fs-4 mb-1">
+                                @string.Format("{0:N0}", giaHienThi) ₫
+                            </p>
+                            @if (giamGia > 0)
+                            {
+                            <p class="text-muted small text-decoration-line-through">
+                                @string.Format("{0:N0}", sp.Gia) ₫
+                            </p>
+                            }
                         </div>
 
-                        <a asp-controller="SanPham"
-                           asp-action="Details"
-                           asp-route-id="@sp.MaSp"
-                           class="card-link" style="text-decoration:none; color:inherit;">
-
-                            <div class="card shadow-sm h-100 product-card">
-                            </div>
+                        <a asp-controller="GioHang" asp-action="AddToCart" asp-route-id="@sp.MaSp"
+                           class="btn btn-dark w-100 mt-3 py-3 fw-bold">
+                            THÊM VÀO GIỎ
                         </a>
                     </div>
                 </div>
             </div>
         }
-    </div>
-</div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a asp-controller="SanPham" asp-action="Index" class="btn btn-outline-dark btn-lg px-5">
+                XEM TẤT CẢ SẢN PHẨM →
+            </a>
+        </div>
+    </section>
+
+    <!-- Bán Chạy Nhất -->
+    <section class="container my-5">
+        <h2 class="fw-bold fs-1 mb-4 text-center"> BÁN CHẠY NHẤT THÁNG</h2>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
+            @foreach (var sp in bestSelling)
+        {
+            await Html.RenderPartialAsync("_ProductCard", sp);
+        }
+        </div>
+    </section>
+
+    <!-- Sản Phẩm Mới Nhất -->
+    <section class="bg-light py-5">
+        <div class="container">
+            <h2 class="fw-bold fs-1 mb-5 text-center"> SẢN PHẨM MỚI NHẤT</h2>
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+                @foreach (var sp in newArrivals)
+            {
+                await Html.RenderPartialAsync("_ProductCard", sp);
+            }
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown Timer -->
+    <script>
+        const endTime = new Date();
+        endTime.setHours(23, 59, 59, 999);
+
+        const timer = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = endTime - now;
+
+            if (distance < 0) {
+                document.getElementById("countdown-timer").innerHTML = "<span class='text-danger fw-bold fs-3'>ĐÃ HẾT HẠN!</span>";
+                clearInterval(timer);
+                return;
+            }
+
+            const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            const seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+
+            document.getElementById("countdown-timer").innerHTML = `
+                <span class="bg-dark text-white px-3 py-2 rounded">${hours}</span>
+                <span class="mx-2 text-muted">:</span>
+                <span class="bg-dark text-white px-3 py-2 rounded">${minutes}</span>
+                <span class="mx-2 text-muted">:</span>
+                <span class="bg-dark text-white px-3 py-2 rounded">${seconds}</span>
+            `;
+        }, 1000);
+    </script>
+
+    <!-- Tạo file Partial để tái sử dụng card (tùy chọn nhưng rất sạch code) -->
+    <!-- Đường dẫn: Views/Shared/_ProductCard.cshtml -->

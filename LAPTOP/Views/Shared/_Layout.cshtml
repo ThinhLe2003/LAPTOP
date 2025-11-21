@@ -1,119 +1,192 @@
-﻿
-@{
-    Layout = null;
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - LAPTOPSHOP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - LaptopShop</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts - Inter (giống Exclusive) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS - Giống Exclusive nhưng tối ưu cho Laptop Shop -->
+    <style>
+        :root {
+            --primary: #DB4444;
+            --dark: #000000;
+            --light: #FFFFFF;
+            --gray: #7D8184;
+            --light-gray: #F5F5F5;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            background-color: #fff;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+        }
+
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border: none;
+            padding: hover
+
+        {
+            background-color: #c03333;
+        }
+
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .hover-lift:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            }
+
+        .card {
+            transition: all 0.3s;
+        }
+
+            .card:hover {
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+
+        #countdown-timer span {
+            font-weight: 600;
+        }
+
+        .badge-discount {
+            background: var(--primary);
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.35rem 0.65rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
 </head>
-
 <body>
 
-    <div class="fixed-header-wrapper">
+    <!-- Top Bar Khuyến Mãi -->
+    <div class="bg-black text-white py-2 text-center small fw-medium">
+        <div class="container">
+            🎁 Black Friday 2025 - Giảm tới 8 triệu + Trả góp 0% + Quà tặng độc quyền!
+            <a href="#flash-sale" class="text-white text-decoration-underline ms-2">MUA NGAY</a>
+        </div>
+    </div>
 
-        <header class="bg-danger text-white py-2 shadow-sm">
-            <div class="container d-flex flex-wrap justify-content-between align-items-center">
-
-                <a asp-controller="Home" asp-action="Index" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                    <img src="~/img/Logo-full.png" alt="Logo" height="45" />
-                </a>
-
-                <form class="d-flex flex-grow-1 mx-3" asp-controller="SanPham" asp-action="TimKiem" style="max-width: 600px;">
-                    <input class="form-control" type="search" placeholder="Gõ tên hoặc model máy để tìm..." name="keyword" />
-                    <button class="btn btn-light" type="submit" style="margin-left: -1px;"><i class="bi bi-search"></i></button>
-                </form>
-
-                <div class="d-flex align-items-center">
-                    <div class="text-end me-3">
-                        <div class="fw-bold">📞 Hotline: 0896598433</div>
-                        <small>🕑 T.Gian làm việc: 08:30 - 19:30</small>
-                    </div>
-                    <a asp-controller="GioHang" asp-action="Index" class="btn btn-outline-light d-flex align-items-center">
-                        <i class="bi bi-cart fs-4 me-2"></i>
-                        <span class="badge bg-light text-danger rounded-pill">0</span>
+    <!-- Header / Navbar -->
+    <header class="border-bottom bg-white sticky-top shadow-sm">
+        <div class="container py-3">
+            <div class="row align-items-center">
+                <!-- Logo -->
+                <div class="col-6 col-md-3">
+                    <a asp-controller="Home" asp-action="Index" class="fw-bold fs-3 text-dark text-decoration-none">
+                        LAPTOPSHOP
                     </a>
                 </div>
-            </div>
-        </header>
 
-        <nav class="navbar navbar-expand-lg bottom-navbar py-0">
-            <div class="container">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <!-- Search Bar - Chỉ hiện trên md trở lên -->
+                <div class="col-md-5 d-none d-md-block">
+                    <form class="d-flex">
+                        <input type="text" class="form-control me-2 rounded-pill" placeholder="Tìm MacBook, Gaming RTX 40, Dell XPS..." aria-label="Search">
+                        <button class="btn btn-dark rounded-pill px-4" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                </div>
 
-                <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav">
-
-                        <li class="nav-item dropdown dropdown-megamenu me-3">
-                            <a class="nav-link dropdown-toggle text-dark fw-bold category-dropdown-link" href="#" id="megamenuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-list me-2 fs-5"></i> DANH MỤC SẢN PHẨM
-                            </a>
-
-                            <div class="dropdown-menu shadow-lg" aria-labelledby="megamenuDropdown" style="width: 800px;">
-                                <div class="row">
-
-                                    <div class="col-lg-3 col-md-6">
-                                        <h6>THEO HÃNG SẢN XUẤT</h6>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Dell">Laptop Dell</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="HP">Laptop HP</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Asus">Laptop Asus</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Lenovo">Laptop Lenovo</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Acer">Laptop Acer</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-hang="Macbook">Macbook</a>
-                                    </div>
-
-                                    <div class="col-lg-3 col-md-6">
-                                        <h6>THEO NHU CẦU SỬ DỤNG</h6>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="Gaming">Laptop Gaming</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="VanPhong">Laptop Văn phòng</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="DoHoa">Laptop Đồ họa</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-nhuCau="MongNhe">Laptop Mỏng nhẹ</a>
-                                    </div>
-
-                                    <div class="col-lg-3 col-md-6">
-                                        <h6>THEO KHOẢNG GIÁ</h6>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="5-10">Từ 5 - 10 triệu</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="10-20">Từ 10 - 20 triệu</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="20-30">Từ 20 - 30 triệu</a>
-                                        <a class="dropdown-item" asp-controller="SanPham" asp-action="Index" asp-route-gia="tren-30">Trên 30 triệu</a>
-                                    </div>
-
-                                    <div class="col-lg-3 col-md-6 d-none d-lg-block">
-                                        <h6>SẢN PHẨM MỚI NHẤT</h6>
-                                        <a href="#">
-                                            <img src="~/img/banner-hp-omni.jpg" alt="Quảng cáo" class="promo-image" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                <!-- Icons -->
+                <div class="col-6 col-md-4 text-end">
+                    <a href="#" class="text-dark mx-3 fs-4"><i class="bi bi-heart"></i></a>
+                    <a asp-controller="GioHang" asp-action="Index" class="text-dark mx-3 fs-4 position-relative">
+                        <i class="bi bi-cart3"></i>
+                        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
+                            0
+                        </span>
+                    </a>
+                    <a href="#" class="text-dark mx-3 fs-4 d-md-none"><i class="bi bi-search"></i></a>
                 </div>
             </div>
-        </nav>
-    </div>
-    <div class="container-fluid bg-light" style="min-height: 70vh;">
-        <main role="main" class="py-3">
-            @RenderBody()
-        </main>
-    </div>
+        </div>
+    </header>
 
-    <footer class="bg-dark text-white border-top text-center py-3">
-        <small>&copy; 2025 - LAPTOP XACH TAY | <a asp-controller="Home" asp-action="Privacy">Chính sách bảo mật</a></small>
+    <!-- Main Content -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4">
+                    <h4 class="fw-bold mb-3">EXCLUSIVE LAPTOP</h4>
+                    <p class="text-secondary">Chuyên cung cấp laptop chính hãng: MacBook, Gaming, Doanh nhân, Sinh viên, Workstation. Bảo hành chính hãng - Giao hàng toàn quốc.</p>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold mb-3">Hỗ Trợ</h6>
+                    <ul class="list-unstyled text-secondary small">
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Hướng dẫn mua hàng</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Chính sách bảo hành</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Trả góp 0%</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Vận chuyển</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <h6 class="fw-bold mb-3">Tài Khoản</h6>
+                    <ul class="list-unstyled text-secondary small">
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Tài khoản của tôi</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Lịch sử mua hàng</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Danh sách yêu thích</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <h6 class="fw-bold mb-3">Liên Hệ</h6>
+                    <p class="text-secondary mb-1">📍 TP.HCM & Hà Nội</p>
+                    <p class="text-secondary mb-1">☎ 1900 9999</p>
+                    <p class="text-secondary mb-3">✉️ support@exclusivelaptop.vn</p>
+                    <div class="d-flex gap-3 justify-content-lg-end">
+                        <a href="#" class="text-white fs-4"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white fs-4"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white fs-4"><i class="bi bi-tiktok"></i></a>
+                        <a href="#" class="text-white fs-4"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 border-secondary">
+            <div class="text-center text-secondary small">
+                © 2025 Exclusive Laptop. Tất cả quyền được bảo lưu.
+            </div>
+        </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
