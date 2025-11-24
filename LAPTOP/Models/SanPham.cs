@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations; // <-- CẦN THÊM DÒNG NÀY
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LAPTOP.Models
 {
@@ -26,15 +27,16 @@ namespace LAPTOP.Models
             ChiTietHoaDons = new HashSet<ChiTietHoaDon>();
         }
 
-       
+        [Key]
         public string MaSp { get; set; } = null!;
         public string? TenSp { get; set; }
         public decimal? Gia { get; set; }
 
         public string? HinhAnh { get; set; }     
         public int SoLuongTon { get; set; }    
-        public decimal? GiaKhuyenMai { get; set; } 
-        public int? MaLoai { get; set; }          
+        public decimal? GiaKhuyenMai { get; set; }
+        [Required(ErrorMessage = "Vui lòng chọn loại sản phẩm")]
+        public int MaLoai { get; set; }
         [Display(Name = "Nổi bật")]
         public bool IsFeatured { get; set; }
 

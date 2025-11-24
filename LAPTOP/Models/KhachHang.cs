@@ -13,7 +13,9 @@ namespace LAPTOP.Models
         public string MaKh { get; set; } = null!;
         public string? TenKh { get; set; }
         public string? Sdt { get; set; }
+        
         public string? QueQuan { get; set; }
+      
         public string? DiaChi { get; set; }
         public bool? GioiTinh { get; set; }
         public string? Email { get; set; }

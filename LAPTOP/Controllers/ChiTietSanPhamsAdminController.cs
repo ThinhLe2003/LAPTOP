@@ -2,6 +2,7 @@
 using LAPTOP.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace LAPTOP.Controllers
@@ -114,24 +115,32 @@ namespace LAPTOP.Controllers
         }
 
         // Hiển thị form xóa chi tiết sản phẩm
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var chiTiet = _context.ChiTietSanPhams.FirstOrDefault(x => x.MaSp == id);
+            if(string.IsNullOrEmpty(id)) return NotFound();
+            var chiTiet = await _context.ChiTietSanPhams
+                .Include(m => m.MaSpNavigation)
+                .FirstOrDefaultAsync(m => m.MaSp == id);
             if (chiTiet == null) return NotFound();
             return View(chiTiet);
         }
 
         // Xử lý xóa chi tiết sản phẩm
-        [HttpPost]
-        public IActionResult DeleteConfirmed(string id)
+        // SỬA THÀNH DÒNG NÀY
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var chiTiet = _context.ChiTietSanPhams.FirstOrDefault(x => x.MaSp == id);
+            var chiTiet = await _context.ChiTietSanPhams.FindAsync(id);
             if (chiTiet != null)
             {
                 _context.ChiTietSanPhams.Remove(chiTiet);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync(); // Có await
+                TempData["Success"] = "Xóa chi tiết sản phẩm thành công!";
             }
-            return RedirectToAction("Index");
+
+            TempData["Success"] = "Xóa chi tiết sản phẩm thành công!";
+            return RedirectToAction(nameof(Index));
         }
     }
 }
