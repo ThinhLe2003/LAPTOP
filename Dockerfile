@@ -1,17 +1,24 @@
 # ========== Build stage ==========
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-# Copy file project
-COPY LAPTOP/LAPTOP.csproj ./LAPTOP/
-RUN dotnet restore ./LAPTOP/LAPTOP.csproj
-# Copy toàn bộ source và build
+
+# Copy csproj vào đúng thư mục
+COPY LAPTOP.csproj ./LAPTOP.csproj
+
+# Restore package
+RUN dotnet restore LAPTOP.csproj
+
+# Copy toàn bộ source code
 COPY . .
-WORKDIR /src/LAPTOP
-RUN dotnet publish -c Release -o /app/out
+
+# Build và publish
+WORKDIR /src
+RUN dotnet publish LAPTOP.csproj -c Release -o /app/out
+
 # ========== Runtime stage ==========
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out ./
-# Render thường dùng port 8080
+
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "LAPTOP.dll"]
