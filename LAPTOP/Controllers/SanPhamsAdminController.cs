@@ -70,12 +70,10 @@ namespace LAPTOP.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, SanPham sp)
+        public async Task<IActionResult> Edit([FromRoute] string id, SanPham sp)
         {
-            if (id != sp.MaSp) return NotFound();
-
-            ModelState.Remove("LoaiSanPham");
-            ModelState.Remove("ChiTietHoaDons");
+            if (id != sp.MaSp)
+                return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -83,15 +81,16 @@ namespace LAPTOP.Controllers
                 {
                     _context.Update(sp);
                     await _context.SaveChangesAsync();
-                    TempData["Success"] = "Cập nhật sản phẩm thành công!";
-                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateException ex)
+                catch (DbUpdateException)
                 {
-                    ModelState.AddModelError("", "Không thể cập nhật: " + ex.Message);
+                    if (!SanPhamExists(sp.MaSp))
+                        return NotFound();
+                    else
+                        throw;
                 }
+                return RedirectToAction(nameof(Index));
             }
-
             ViewBag.MaLoai = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai", sp.MaLoai);
             return View(sp);
         }
