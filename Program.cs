@@ -42,6 +42,7 @@ if (!builder.Environment.IsDevelopment())
             var redis = ConnectionMultiplexer.Connect(redisConn);
             builder.Services.AddDataProtection()
                 .PersistKeysToStackExchangeRedis(redis, "my-app-keys");
+            .SetApplicationName("laptop-store");
         }
         catch (Exception ex)
         {
