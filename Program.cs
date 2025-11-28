@@ -54,14 +54,17 @@ if (!builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
-// --- 5. FIX LỖI 400: Cấu hình Forwarded Headers (Quan trọng cho Render) ---
+
 // Giúp ứng dụng hiểu là đang chạy sau HTTPS của Render
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
+orwardedHeaderOptions.KnownNetworks.Clear();
+forwardedHeaderOptions.KnownProxies.Clear();
 
-// --- 6. FIX LỖI 400: Cấu hình Định dạng số (Dấu chấm là thập phân) ---
+app.UseForwardedHeaders(forwardedHeaderOptions);
+
 // Đảm bảo nhập giá 15000000 hoặc 15.5 đều hiểu đúng trên mọi server
 var defaultDateCulture = "en-US";
 var ci = new CultureInfo(defaultDateCulture);
