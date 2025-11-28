@@ -50,16 +50,20 @@ if (!builder.Environment.IsDevelopment())
     }
 }
 
-var app = builder.Build();
 
 
 // --- Forwarded Headers CHUẨN CHO RENDER ---
 var forwardedHeaderOptions = new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+    ForwardedHeaders.XForwardedProto                   |
+    ForwardedHeaders.XForwardedHost
 };
-forwardedHeaderOptions.KnownNetworks.Clear();
+
+forwardedHeaderOptions.KnownNetworks.Clear();  // Very important for Render
 forwardedHeaderOptions.KnownProxies.Clear();
+var app = builder.Build();
+
 app.UseForwardedHeaders(forwardedHeaderOptions);
 
 
