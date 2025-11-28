@@ -1,0 +1,92 @@
+﻿@model IEnumerable<LAPTOP.Models.KhachHang>
+    @{
+    ViewData["Title"] = "Quản Lý Khách Hàng";
+    Layout = "_AdminLayout";
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-info">
+            <i class="bi bi-person-lines-fill"></i> @ViewData["Title"] (@Model.Count() khách hàng)
+        </h2>
+        <a asp-action="Create" class="btn btn-success btn-lg shadow">
+            <i class="bi bi-person-plus"></i> Thêm khách hàng mới
+        </a>
+    </div>
+
+    <!-- Bảng khách hàng -->
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr class="text-center">
+                        <th width="10%">Mã KH</th>
+                        <th width="20%">Họ tên</th>
+                        <th>SĐT</th>
+                        <th>Email</th>
+                        <th>Giới tính</th>
+                        <th>Quê quán</th>
+                        <th>Địa chỉ</th>
+                        <th width="12%">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox display-1 d-block"></i>
+                            <p class="mt-3 fs-4">Chưa có khách hàng nào</p>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td class="text-center"><strong class="text-primary">@item.MaKh</strong></td>
+                        <td class="fw-bold">@item.TenKh</td>
+                        <td>
+                            <a href="tel:@item.Sdt" class="text-decoration-none">
+                                <i class="bi bi-telephone"></i> @item.Sdt
+                            </a>
+                        </td>
+                        <td>
+                            <a href="mailto:@item.Email" class="text-decoration-none">
+                                <i class="bi bi-envelope"></i> @item.Email
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            @if (item.GioiTinh == true)
+                                {
+                            <span class="text-primary"><i class="bi bi-gender-male"></i> Nam</span>
+                                }
+                                else if (item.GioiTinh == false)
+                                {
+                            <span class="text-danger"><i class="bi bi-gender-female"></i> Nữ</span>
+                                }
+                                else
+                                {
+                            <span class="text-muted">—</span>
+                                }
+                        </td>
+                        <td>@item.QueQuan</td>
+                        <td>@item.DiaChi</td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.MaKh" class="btn btn-warning btn-sm" title="Sửa">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.MaKh" class="btn btn-info btn-sm text-white" title="Chi tiết">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.MaKh" class="btn btn-danger btn-sm" title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>

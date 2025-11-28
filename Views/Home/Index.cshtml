@@ -1,0 +1,255 @@
+﻿@model IEnumerable<LAPTOP.Models.SanPham>
+    @{
+    ViewData["Title"] = "Laptop Xách Tay Shop - Laptop Mỹ Nhật Giá Tốt Nhất";
+
+    // Flash sale: ưu tiên IsFeatured → có khuyến mãi → bất kỳ
+    var flashSale = Model.Where(p => p.IsFeatured).Take(10).ToList();
+    if (flashSale.Count < 10)
+    {
+        var more = Model.Where(p => !flashSale.Contains(p) && p.GiaKhuyenMai.HasValue && p.GiaKhuyenMai < p.Gia)
+                       .Take(10 - flashSale.Count).ToList();
+        flashSale.AddRange(more);
+    }
+    if (flashSale.Count < 10)
+    {
+        var remain = Model.Where(p => !flashSale.Contains(p)).Take(10 - flashSale.Count).ToList();
+        flashSale.AddRange(remain);
+    }
+    }
+
+    <!-- Hero Banner lớn + countdown thật -->
+    <section class="position-relative overflow-hidden" style="height: 80vh; min-height: 600px;">
+        <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=1920&h=1080&fit=crop"
+             class="w-100 h-100 position-absolute top-0 start-0" style="object-fit: cover; filter: brightness(0.6);">
+        <div class="container h-100 position-relative">
+            <div class="row h-100 align-items-center">
+                <div class="col-lg-6 text-white">
+                    <h1 class="display-1 fw-bold">LAPTOP XÁCH TAY</h1>
+                    <h2 class="display-4 fw-bold text-red">MỸ - NHẬT GIÁ TỐT NHẤT 2025</h2>
+                    <p class="fs-3 my-4">Chỉ từ 5 triệu • Bảo hành 12-36 tháng • 1 đổi 1 trong 30 ngày</p>
+                    <a href="#flash-sale" class="btn btn-red text-white px-5 py-4 rounded-pill fs-4 fw-bold shadow-lg">
+                        XEM FLASH SALE HÔM NAY →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flash Sale Section giống mẫu 100% -->
+    <section id="flash-sale" class="container my-5">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">FLASH SALE <span class="text-red">LIMITED TIME OFFER</span></h2>
+            <div class="d-flex justify-content-center align-items-center gap-3 my-4">
+                <span class="fw-bold">Kết thúc trong:</span>
+                <div class="d-flex gap-2" id="countdown">
+                    <div class="countdown-box">03</div><span class="text-muted fs-3">:</span>
+                    <div class="countdown-box">14</div><span class="text-muted fs-3">:</span>
+                    <div class="countdown-box">58</div><span class="text-muted fs-3">:</span>
+                    <div class="countdown-box">56</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
+            @foreach (var p in flashSale)
+        {
+            var giaHT = p.GiaKhuyenMai.HasValue ? p.GiaKhuyenMai.Value : p.Gia.Value;
+            var percent = p.GiaKhuyenMai.HasValue ? Math.Round((double)((p.Gia.Value - p.GiaKhuyenMai.Value) / p.Gia.Value * 100)) : 0;
+
+            <div class="col">
+                <div class="card h-100 border-0 shadow hover-lift rounded-4 overflow-hidden">
+                    @if (percent > 0)
+                    {
+                    <span class="badge-sale position-absolute top-0 start-0 z-3">-@percent%</span>
+                    }
+                    @if (p.IsFeatured)
+                    {
+                    <span class="position-absolute top-0 end-0 bg-warning text-dark px-3 py-1 small fw-bold z-3">HOT</span>
+                    }
+                    <div class="text-center bg-light p-4">
+                        <img src="@p.HinhAnh" class="img-fluid" style="height: 200px; object-fit: contain;" alt="@p.TenSp">
+                    </div>
+                    <div class="card-body text-center d-flex flex-column">
+                        <h6 class="product-name fw-bold">@p.TenSp</h6>
+                        <div class="mt-auto">
+                            <p class="text-red fw-bold fs-4 mb-1">@string.Format("{0:N0}", giaHT) ₫</p>
+                            @if (percent > 0)
+                            {
+                            <p class="text-muted small text-decoration-line-through">@string.Format("{0:N0}", p.Gia) ₫</p>
+                            }
+                            <a asp-controller="GioHang" asp-action="AddToCart" asp-route-id="@p.MaSp"
+                               class="btn btn-red w-100 mt-3 py-3 text-white fw-bold rounded-pill">
+                                MUA NGAY
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+    </section>
+    @* ==================== 1. DANH MỤC THEO THƯƠNG HIỆU (Dell Precision, Latitude, HP EliteBook, ThinkPad...) ==================== *@
+    <section class="container my-5">
+        <h2 class="text-center fw-bold fs-3 mb-5">
+            CHỌN LAPTOP THEO <span class="text-red">THƯƠNG HIỆU & DÒNG MÁY</span>
+        </h2>
+
+        <div class="row row-cols-2 row-cols-md-4 g-4">
+            <!-- Dell Precision -->
+            <div class="col">
+                <a asp-controller="SanPham" asp-action="Index" asp-route-brand="Dell Precision" class="text-decoration-none">
+                    <div class="position-relative overflow-hidden rounded-4 shadow hover-lift text-white text-center" style="height: 280px; background: linear-gradient(135deg, #1e3c72, #2a5298);">
+                        <img src="~/img/dell precision 3560.jpg"
+                             class="position-absolute top-50 start-50 translate-middle w-75" style="object-fit: contain;" alt="Dell Precision">
+                        <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                            <h5 class="fw-bold mb-0" style="color: #4dabf7;">Dell Precision</h5>
+                            <small>Workstation - Đồ họa</small>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 m-3 bg-primary text-white px-3 py-2 rounded-pill small fw-bold">
+                            Xem ngay
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Dell Latitude -->
+            <div class="col">
+                <a asp-controller="SanPham" asp-action="Index" asp-route-brand="Dell Latitude" class="text-decoration-none">
+                    <div class="position-relative overflow-hidden rounded-4 shadow hover-lift text-white text-center" style="height: 280px; background: linear-gradient(135deg, #862e9c, #c44569);">
+                        <img src="~/img/dell latitude 5300.jpg"
+                             class="position-absolute top-50 start-50 translate-middle w-75" alt="Dell Latitude">
+                        <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                            <h5 class="fw-bold mb-0" style="color: #ff6bcb;">Dell Latitude</h5>
+                            <small>Doanh nhân - Siêu bền</small>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 m-3" style="background: #ff6bcb; color:#000; padding: 8px 20px; border-radius: 50px; font-weight: bold; font-size: 0.9rem;">
+                            Xem ngay
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- HP EliteBook -->
+            <div class="col">
+                <a asp-controller="SanPham" asp-action="Index" asp-route-brand="HP EliteBook" class="text-decoration-none">
+                    <div class="position-relative overflow-hidden rounded-4 shadow hover-lift text-white text-center" style="height: 280px; background: linear-gradient(135deg, #ed8b00, #ff5e62);">
+                        <img src="~/img/hp elitebook 835.jpg"
+                             class="position-absolute top-50 start-50 translate-middle w-75" alt="HP EliteBook">
+                        <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                            <h5 class="fw-bold mb-0" style="color: #ffa726;">HP EliteBook</h5>
+                            <small>Business cao cấp</small>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 m-3" style="background: #ffa726; color:#000; padding: 8px 20px; border-radius: 50px; font-weight: bold;">
+                            Xem ngay
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Lenovo ThinkPad -->
+            <div class="col">
+                <a asp-controller="SanPham" asp-action="Index" asp-route-brand="ThinkPad" class="text-decoration-none">
+                    <div class="position-relative overflow-hidden rounded-4 shadow hover-lift text-white text-center" style="height: 280px; background: linear-gradient(135deg, #2ed573, #1e90ff);">
+                        <img src="~/img/lenovo thinkpadd p53.jpg"
+                             class="position-absolute top-50 start-50 translate-middle w-75" alt="Lenovo ThinkPad">
+                        <div class="position-absolute bottom-0 start-0 end-0 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+                            <h5 class="fw-bold mb-0" style="color: #7bed9f;">Lenovo ThinkPad</h5>
+                            <small>Huyền thoại bàn phím</small>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 m-3" style="background: #2ed573; color:#000; padding: 8px 20px; border-radius: 50px; font-weight: bold;">
+                            Xem ngay
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Bạn có thể thêm MacBook, Surface, Gaming... tùy ý -->
+        </div>
+    </section>
+
+    @* ==================== PHẦN LAPTOP XÁCH TAY - ẢNH THỰC TẾ (ĐÃ CHỈNH ĐÚNG ĐƯỜNG DẪN) ==================== *@
+    <section class="container my-5">
+        <h2 class="text-center fw-bold fs-3 mb-5">
+            LAPTOP <span class="text-red">XÁCH TAY</span> TỪ MỸ - NHẬT
+        </h2>
+
+        <div class="row g-3">
+            <!-- Ảnh lớn bên trái -->
+            <div class="col-12 col-md-6">
+                <a asp-controller="SanPham" asp-action="Index" asp-route-loai="xachtay">
+                    <img src="~/img/katana laptop.jpg"
+                         class="img-fluid rounded-4 shadow hover-lift w-100"
+                         style="height: 420px; object-fit: cover;"
+                         alt="Laptop xách tay Mỹ">
+                </a>
+            </div>
+
+            <!-- 4 ảnh nhỏ bên phải - ĐÃ DÙNG ẢNH TRONG THƯ MỤC /img/ CỦA BẠN -->
+            <div class="col-12 col-md-6">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <img src="~/img/Dell-Latitude.jpg"
+                             class="img-fluid rounded-4 shadow hover-lift w-100"
+                             style="height: 205px; object-fit: cover;"
+                             alt="Dell Latitude xách tay">
+                    </div>
+                    <div class="col-6">
+                        <img src="~/img/HP-Elitebook.jpg"
+                             class="img-fluid rounded-4 shadow hover-lift w-100"
+                             style="height: 205px; object-fit: cover;"
+                             alt="HP EliteBook xách tay">
+                    </div>
+                    <div class="col-6">
+                        <img src="~/img/Lenovo-Thinkpad-2.jpg"
+                             class="img-fluid rounded-4 shadow hover-lift w-100"
+                             style="height: 205px; object-fit: cover;"
+                             alt="Lenovo ThinkPad xách tay">
+                    </div>
+                    <div class="col-6">
+                        <img src="~/img/dell-g15.jpg"
+                             class="img-fluid rounded-4 shadow hover-lift w-100"
+                             style="height: 205px; object-fit: cover;"
+                             alt="Dell Gaming xách tay">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-controller="SanPham" asp-action="Index" asp-route-loai="xachtay"
+               class="btn btn-red text-white px-5 py-3 rounded-pill fw-bold fs-5">
+                XEM TẤT CẢ LAPTOP XÁCH TAY →
+            </a>
+        </div>
+    </section>
+
+
+    <!-- Danh mục nhanh + Thương hiệu + Sản phẩm nổi bật (bạn có thể thêm các section khác tương tự) -->
+    <!-- Countdown Script thật (hết giờ tự reload deal mới) -->
+    <script>
+        function startCountdown() {
+            const end = new Date();
+            end.setHours(23, 59, 59, 999);
+
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = end - now;
+
+                if (distance < 0) {
+                    clearInterval(timer);
+                    document.getElementById("countdown").innerHTML = "<span class='text-red fw-bold fs-3'>ĐÃ HẾT HẠN!</span>";
+                    return;
+                }
+
+                const h = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                const m = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                const s = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+
+                document.getElementById("countdown").innerHTML =
+                    `<div class="countdown-box">${h}</div><span class="text-muted fs-3 mx-2">:</span>` +
+                    `<div class="countdown-box">${m}</div><span class="text-muted fs-3 mx-2">:</span>` +
+                    `<div class="countdown-box">${s}</div>`;
+            }, 1000);
+        }
+        startCountdown();
+    </script>

@@ -1,0 +1,55 @@
+﻿@model LAPTOP.Models.ChiTietSanPham
+
+@{
+    ViewData["Title"] = "Thêm Chi Tiết Sản Phẩm";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="MaSp" class="form-label">Sản phẩm</label>
+        <select asp-for="MaSp" asp-items="ViewBag.MaSp" class="form-select"></select>
+        <span asp-validation-for="MaSp" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cpu" class="form-label">CPU</label>
+        <input asp-for="Cpu" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Ram" class="form-label">RAM</label>
+        <input asp-for="Ram" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Vga" class="form-label">VGA</label>
+        <input asp-for="Vga" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ManHinh" class="form-label">Màn hình</label>
+        <input asp-for="ManHinh" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="HeDieuHanh" class="form-label">Hệ điều hành</label>
+        <input asp-for="HeDieuHanh" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="KichThuoc" class="form-label">Kích thước</label>
+        <input asp-for="KichThuoc" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MauSac" class="form-label">Màu sắc</label>
+        <input asp-for="MauSac" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Tạo mới</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>
+
+

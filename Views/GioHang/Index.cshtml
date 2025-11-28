@@ -1,0 +1,48 @@
+﻿@model List<LAPTOP.Models.GioHangItem>
+
+<h2>Giỏ Hàng</h2>
+
+@if (!Model.Any())
+{
+    <p>Giỏ hàng trống!</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+                <th>Chi tiết</th>
+                <th>Xóa</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TenSp</td>
+                <td>@item.Gia.ToString("N0")</td>
+                <td>
+                    <form asp-action="UpdateQuantity" method="post">
+                        <input type="hidden" name="id" value="@item.MaSp" />
+                        <input type="number" name="soLuong" value="@item.SoLuong" min="1" />
+                        <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
+                    </form>
+                </td>
+                <td>@item.ThanhTien.ToString("N0")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.MaSp" class="btn btn-info">Xem</a>
+                </td>
+                <td>
+                    <a asp-action="Remove" asp-route-id="@item.MaSp" class="btn btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <h4>Tổng tiền: @ViewBag.TongTien.ToString("N0")</h4>
+}

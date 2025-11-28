@@ -1,0 +1,62 @@
+﻿@model LAPTOP.Models.SanPham
+@{
+    ViewData["Title"] = "Thêm sản phẩm mới";
+    Layout = "_AdminLayout";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+
+    
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="TenSp" class="form-label">Tên sản phẩm *</label>
+        <input asp-for="TenSp" class="form-control" />
+        <span asp-validation-for="TenSp" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Gia" class="form-label">Giá bán *</label>
+        <input asp-for="Gia" class="form-control" type="number" />
+        <span asp-validation-for="Gia" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="HinhAnh" class="form-label">Link ảnh *</label>
+        <input asp-for="HinhAnh" class="form-control" placeholder="https://..." />
+        <span asp-validation-for="HinhAnh" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SoLuongTon" class="form-label">Số lượng tồn *</label>
+        <input asp-for="SoLuongTon" class="form-control" type="number" value="1" />
+        <span asp-validation-for="SoLuongTon" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="GiaKhuyenMai" class="form-label">Giá khuyến mãi</label>
+        <input asp-for="GiaKhuyenMai" class="form-control" type="number" />
+        <span asp-validation-for="GiaKhuyenMai" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MaLoai" class="form-label">Loại sản phẩm *</label>
+        <select asp-for="MaLoai" class="form-control" asp-items="ViewBag.MaLoai">
+        </select>
+        <span asp-validation-for="MaLoai" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" asp-for="IsFeatured" />
+        <label class="form-check-label" asp-for="IsFeatured">Nổi bật (Flash Sale)</label>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Thêm sản phẩm</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại danh sách</a>
+    </div>
+</form>

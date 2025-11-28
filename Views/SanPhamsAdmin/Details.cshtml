@@ -1,0 +1,61 @@
+﻿@* File: Views/SanPham/Details.cshtml *@
+@model LAPTOP.Models.SanPham
+
+@{
+    ViewData["Title"] = @Model.TenSp;
+    Layout="_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="row">
+
+        <div class="col-md-6">
+            <img src="@Model.HinhAnh" class="img-fluid rounded shadow-sm" alt="@Model.TenSp">
+        </div>
+
+        <div class="col-md-6">
+            <h1 class="fw-bold text-primary">@Model.TenSp</h1>
+
+            <p class="text-muted fs-6 mb-2">Mã sản phẩm: @Model.MaSp</p>
+
+            <div class="d-flex align-items-baseline mb-3">
+                <span class="text-danger fw-bold fs-3 me-3">@string.Format("{0:N0} ₫", Model.GiaKhuyenMai)</span>
+                <del class="text-muted small">@string.Format("{0:N0} ₫", Model.Gia)</del>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light fw-bold">Thông số kỹ thuật cơ bản</div>
+                <ul class="list-group list-group-flush">
+                    @* CHÚ Ý: ĐỐI TƯỢNG ChiTietSanPham PHẢI KHÔNG NULL *@
+                    @if (Model.ChiTietSanPham != null)
+                    {
+                        <li class="list-group-item">
+                            <i class="bi bi-cpu-fill me-2"></i> CPU: @Model.ChiTietSanPham.Cpu
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-memory me-2"></i> RAM: @Model.ChiTietSanPham.Ram
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-display me-2"></i> Màn hình: @Model.ChiTietSanPham.ManHinh
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-battery-half me-2"></i> Hệ điều hành: @Model.ChiTietSanPham.HeDieuHanh
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-palette me-2"></i> VGA: @Model.ChiTietSanPham.Vga
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="list-group-item text-muted">Thông số chi tiết đang được cập nhật.</li>
+                    }
+                </ul>
+            </div>
+
+            <button class="btn btn-danger btn-lg w-100 mb-3">
+                <i class="bi bi-bag-fill me-2"></i> MUA HÀNG NGAY
+            </button>
+        </div>
+
+    </div>
+</div>
