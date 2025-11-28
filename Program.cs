@@ -56,7 +56,7 @@ var app = builder.Build();
 
 
 // Giúp ứng dụng hiểu là đang chạy sau HTTPS của Render
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+app.UseForwardedHeaders(new ForwardedHeadersOptions)
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
