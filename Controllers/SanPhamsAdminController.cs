@@ -134,5 +134,12 @@ namespace LAPTOP.Controllers
             if (sp == null) return NotFound();
             return View(sp);
         }
+        private bool SanPhamExists(int id)
+        {
+            // _context là biến ApplicationDbContext bạn đã khai báo ở đầu Controller
+            // SanPhams là tên bảng trong DbContext
+            // e.Id là khóa chính của bảng SanPham (nếu bạn đặt tên khác ví dụ MaSP thì sửa lại nhé)
+            return (_context.SanPhams?.Any(e => e.MaSp == id)).GetValueOrDefault();
+        }
     }
 }
