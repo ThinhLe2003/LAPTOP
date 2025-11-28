@@ -1,26 +1,24 @@
 ﻿using LAPTOP.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection;
 using StackExchange.Redis;
-using Microsoft.AspNetCore.HttpOverrides;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Port cho Render
+// 1. Cấu hình port cho Render (cách chuẩn .NET 6)
 var port = Environment.GetEnvironmentVariable("PORT");
-if (!string.Empty.Equals(port))
+if (!string.IsNullOrEmpty(port))
 {
     builder.WebHost.ConfigureKestrel(options =>
     {
         options.ListenAnyIP(int.Parse(port));
     });
-    // Hoặc cách cũ vẫn chạy tốt:
-    // builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 }
 
-// 2. DbContext
+// 2. Database
 builder.Services.AddDbContext<STORELAPTOPContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -33,10 +31,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// 4. Redis + DataProtection (chỉ production)
+// 4. Redis + DataProtection (chỉ ở production)
 if (!builder.Environment.IsDevelopment())
 {
-    var redisConn = builder.Configuration.GetValue<string>("redis_connection");
     var redisConn = builder.Configuration.GetValue<string>("redis_connection");
     if (!string.IsNullOrEmpty(redisConn))
     {
@@ -48,27 +45,27 @@ if (!builder.Environment.IsDevelopment())
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Redis failed: " + ex.Message);
+            // Không làm app crash nếu Redis lỗi
+            Console.WriteLine("Redis connection failed: " + ex.Message);
         }
     }
 }
 
-// QUAN TRỌNG NHẤT CHO .NET 6 + RENDER
+// 5. FORWARDED HEADERS – BẮT BUỘC CHO RENDER (đặt trước khi Build)
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor |
-        ForwardedHeaders.XForwardedProto |
-        ForwardedHeaders.XForwardedHost;
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                               ForwardedHeaders.XForwardedProto |
+                               ForwardedHeaders.XForwardedHost;
 
-    options.KnownNetworks.Clear();   // bắt buộc trên Render
-    options.KnownProxies.Clear();    // bắt buộc trên Render
-    options.ForwardLimit = 2;        // phòng trường hợp có 2 proxy
+    options.KnownNetworks.Clear();   // Render dùng proxy động
+    options.KnownProxies.Clear();    // bắt buộc
+    options.ForwardLimit = 2;        // an toàn hơn
 });
 
 var app = builder.Build();
 
-// DÒNG ĐẦU TIÊN SAU builder.Build() – BẮT BUỘC!
+// DÒNG ĐẦU TIÊN SAU Build – QUAN TRỌNG NHẤT!!!
 app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
@@ -81,20 +78,20 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();   // giờ mới hoạt động đúng
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.UseSession();
 
-// Localization
-var ci = new CultureInfo("en-US")
-{
-    NumberFormat = { NumberDecimalSeparator = ".", CurrencyDecimalSeparator = "." }
-};
+// Localization (đặt sau cũng được)
+var ci = new CultureInfo("en-US");
+ci.NumberFormat.NumberDecimalSeparator = ".";
+ci.NumberFormat.CurrencyDecimalSeparator = ".";
 
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
