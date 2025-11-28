@@ -142,5 +142,9 @@ namespace LAPTOP.Controllers
             // e.Id là khóa chính của bảng SanPham (nếu bạn đặt tên khác ví dụ MaSP thì sửa lại nhé)
             return (_context.SanPhams?.Any(e => e.MaSp == id)).GetValueOrDefault();
         }
+        public IActionResult Test()
+        {
+            return Content($"Scheme: {Request.Scheme}<br>Host: {Request.Host}<br>IsHttps: {Request.IsHttps}");
+        }
     }
 }
