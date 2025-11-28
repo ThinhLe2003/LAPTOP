@@ -36,6 +36,12 @@ if (!builder.Environment.IsDevelopment())
 }
 
 var app = builder.Build();
+using Microsoft.AspNetCore.HttpOverrides;
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 // --- Pipeline ---
 if (!app.Environment.IsDevelopment())
