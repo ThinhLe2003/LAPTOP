@@ -33,6 +33,7 @@ namespace LAPTOP.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SanPham sp)
         {

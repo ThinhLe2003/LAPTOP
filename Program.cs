@@ -8,18 +8,23 @@ using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 1. Cấu hình port Render ---
+// 1. Port cho Render
 var port = Environment.GetEnvironmentVariable("PORT");
-if (!string.IsNullOrEmpty(port))
+if (!string.Empty.Equals(port))
 {
-    builder.WebHost.UseUrls("http://*:" + port);
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(int.Parse(port));
+    });
+    // Hoặc cách cũ vẫn chạy tốt:
+    // builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 }
 
-// --- 2. Kết nối SQL Server ---
+// 2. DbContext
 builder.Services.AddDbContext<STORELAPTOPContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// --- 3. MVC + Session ---
+// 3. MVC + Session
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
@@ -28,50 +33,68 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// --- 4. Redis ---
+// 4. Redis + DataProtection (chỉ production)
 if (!builder.Environment.IsDevelopment())
 {
-    var redisConnectionString = builder.Configuration.GetValue<string>("redis_connection");
-    if (!string.IsNullOrEmpty(redisConnectionString))
+    var redisConn = builder.Configuration.GetValue<string>("redis_connection");
+    var redisConn = builder.Configuration.GetValue<string>("redis_connection");
+    if (!string.IsNullOrEmpty(redisConn))
     {
         try
         {
-            var config = ConfigurationOptions.Parse(redisConnectionString);
-            config.AbortOnConnectFail = false;
-            var redis = ConnectionMultiplexer.Connect(config);
-
+            var redis = ConnectionMultiplexer.Connect(redisConn);
             builder.Services.AddDataProtection()
                 .PersistKeysToStackExchangeRedis(redis, "my-app-keys");
         }
-        catch
+        catch (Exception ex)
         {
-            Console.WriteLine("Redis connection failed.");
+            Console.WriteLine("Redis failed: " + ex.Message);
         }
     }
 }
 
-
-
-// --- Forwarded Headers CHUẨN CHO RENDER ---
-var forwardedHeaderOptions = new ForwardedHeadersOptions
+// QUAN TRỌNG NHẤT CHO .NET 6 + RENDER
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-    ForwardedHeaders.XForwardedProto                   |
-    ForwardedHeaders.XForwardedHost
-};
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto |
+        ForwardedHeaders.XForwardedHost;
 
-forwardedHeaderOptions.KnownNetworks.Clear();  // Very important for Render
-forwardedHeaderOptions.KnownProxies.Clear();
+    options.KnownNetworks.Clear();   // bắt buộc trên Render
+    options.KnownProxies.Clear();    // bắt buộc trên Render
+    options.ForwardLimit = 2;        // phòng trường hợp có 2 proxy
+});
+
 var app = builder.Build();
 
-app.UseForwardedHeaders(forwardedHeaderOptions);
+// DÒNG ĐẦU TIÊN SAU builder.Build() – BẮT BUỘC!
+app.UseForwardedHeaders();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
-// --- Localization ---
-var defaultDateCulture = "en-US";
-var ci = new CultureInfo(defaultDateCulture);
-ci.NumberFormat.NumberDecimalSeparator = ".";
-ci.NumberFormat.CurrencyDecimalSeparator = ".";
+app.UseHttpsRedirection();   // giờ mới hoạt động đúng
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseSession();
+
+// Localization
+var ci = new CultureInfo("en-US")
+{
+    NumberFormat = { NumberDecimalSeparator = ".", CurrencyDecimalSeparator = "." }
+};
 
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
@@ -80,20 +103,6 @@ app.UseRequestLocalization(new RequestLocalizationOptions
     SupportedUICultures = new List<CultureInfo> { ci }
 });
 
-// --- Pipeline ---
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-}
-
-app.UseStaticFiles();
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseSession();
-
-// --- Route mặc định ---
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
