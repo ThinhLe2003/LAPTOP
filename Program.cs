@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Cấu hình port cho Render (cách chuẩn .NET 6)
+// 1. Port Render
 var port = Environment.GetEnvironmentVariable("PORT");
 if (!string.IsNullOrEmpty(port))
 {
@@ -31,7 +31,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// 4. Redis + DataProtection (chỉ ở production)
+// 4. Redis + DataProtection (production only)
 if (!builder.Environment.IsDevelopment())
 {
     var redisConn = builder.Configuration.GetValue<string>("redis_connection");
@@ -41,32 +41,30 @@ if (!builder.Environment.IsDevelopment())
         {
             var redis = ConnectionMultiplexer.Connect(redisConn);
             builder.Services.AddDataProtection()
-                .PersistKeysToStackExchangeRedis(redis, "my-app-keys");
-            .SetApplicationName("laptop-store");
+                .PersistKeysToStackExchangeRedis(redis, "my-app-keys")
+                .SetApplicationName("laptop-28fa");   // quan trọng nhất
         }
         catch (Exception ex)
         {
-            // Không làm app crash nếu Redis lỗi
             Console.WriteLine("Redis connection failed: " + ex.Message);
         }
     }
 }
 
-// 5. FORWARDED HEADERS – BẮT BUỘC CHO RENDER (đặt trước khi Build)
+// 5. Forwarded Headers – bắt buộc cho Render
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
                                ForwardedHeaders.XForwardedProto |
                                ForwardedHeaders.XForwardedHost;
-
-    options.KnownNetworks.Clear();   // Render dùng proxy động
-    options.KnownProxies.Clear();    // bắt buộc
-    options.ForwardLimit = 2;        // an toàn hơn
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+    options.ForwardLimit = 2;
 });
 
 var app = builder.Build();
 
-// DÒNG ĐẦU TIÊN SAU Build – QUAN TRỌNG NHẤT!!!
+// DÒNG ĐẦU TIÊN SAU Build
 app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
@@ -81,15 +79,12 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseSession();
 
-// Localization (đặt sau cũng được)
+// Localization
 var ci = new CultureInfo("en-US");
 ci.NumberFormat.NumberDecimalSeparator = ".";
 ci.NumberFormat.CurrencyDecimalSeparator = ".";
