@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection;
 using StackExchange.Redis;
-using Microsoft.AspNetCore.HttpOverrides; // Đưa lên đầu file
+using Microsoft.AspNetCore.HttpOverrides;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 
@@ -28,8 +28,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// --- 4. Redis & DataProtection (Chỉ chạy khi lên Production/Hosting) ---
-// Đoạn này quan trọng để giữ Session không bị mất khi deploy lại
+// --- 4. Redis ---
 if (!builder.Environment.IsDevelopment())
 {
     var redisConnectionString = builder.Configuration.GetValue<string>("redis_connection");
@@ -46,7 +45,6 @@ if (!builder.Environment.IsDevelopment())
         }
         catch
         {
-            // Nếu Redis lỗi thì bỏ qua, chạy chế độ mặc định để web không sập
             Console.WriteLine("Redis connection failed.");
         }
     }
@@ -55,17 +53,17 @@ if (!builder.Environment.IsDevelopment())
 var app = builder.Build();
 
 
-// Giúp ứng dụng hiểu là đang chạy sau HTTPS của Render
-app.UseForwardedHeaders(new ForwardedHeadersOptions)
+// --- Forwarded Headers CHUẨN CHO RENDER ---
+var forwardedHeaderOptions = new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
-orwardedHeaderOptions.KnownNetworks.Clear();
+};
+forwardedHeaderOptions.KnownNetworks.Clear();
 forwardedHeaderOptions.KnownProxies.Clear();
-
 app.UseForwardedHeaders(forwardedHeaderOptions);
 
-// Đảm bảo nhập giá 15000000 hoặc 15.5 đều hiểu đúng trên mọi server
+
+// --- Localization ---
 var defaultDateCulture = "en-US";
 var ci = new CultureInfo(defaultDateCulture);
 ci.NumberFormat.NumberDecimalSeparator = ".";
@@ -82,15 +80,13 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // app.UseHsts(); // Có thể tắt trên Render nếu gặp lỗi chuyển hướng vòng lặp
 }
 
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication(); // Thêm cái này nếu bạn có chức năng đăng nhập
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseSession();
 
 // --- Route mặc định ---
