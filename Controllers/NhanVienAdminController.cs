@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LAPTOP.Models;
+using LAPTOP.Helpers;
 
 namespace LAPTOP.Controllers
 {
@@ -21,7 +22,7 @@ namespace LAPTOP.Controllers
         // GET: NhanVienAdmin
         public async Task<IActionResult> Index()
         {
-              return _context.NhanViens != null ? 
+              return   _context.NhanViens != null ? 
                           View(await _context.NhanViens.ToListAsync()) :
                           Problem("Entity set 'STORELAPTOPContext.NhanViens'  is null.");
         }
@@ -55,10 +56,18 @@ namespace LAPTOP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaNv,TenNv,Sdt,QueQuan,DiaChi,GioiTinh,HeSoLuong,Luong")] NhanVien nhanVien)
+        public async Task<IActionResult> Create(
+            [Bind("MaNv,TenNv,Sdt,QueQuan,DiaChi,GioiTinh,HeSoLuong,Luong,Role")] NhanVien nhanVien,
+            string Username,
+            string Password)
         {
             if (ModelState.IsValid)
             {
+                nhanVien.UserName = Username;
+                nhanVien.PasswordHash=HashHelper.ToMD5(Password);
+                nhanVien.Role = string.IsNullOrEmpty(nhanVien.Role) ? "Staff" : nhanVien.Role;
+
+
                 _context.Add(nhanVien);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -87,35 +96,30 @@ namespace LAPTOP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaNv,TenNv,Sdt,QueQuan,DiaChi,GioiTinh,HeSoLuong,Luong")] NhanVien nhanVien)
+        public async Task<IActionResult> Edit(string id, [Bind("MaNv,TenNv,Sdt,QueQuan,DiaChi,GioiTinh,HeSoLuong,Luong,Role,UserName")] NhanVien nhanVien, string NewPassword)
         {
-            if (id != nhanVien.MaNv)
-            {
-                return NotFound();
-            }
+            if (id != nhanVien.MaNv) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (!string.IsNullOrEmpty(NewPassword))
+                        nhanVien.PasswordHash = HashHelper.ToMD5(NewPassword);
+
                     _context.Update(nhanVien);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NhanVienExists(nhanVien.MaNv))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!NhanVienExists(nhanVien.MaNv)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(nhanVien);
         }
+
 
         // GET: NhanVienAdmin/Delete/5
         public async Task<IActionResult> Delete(string id)

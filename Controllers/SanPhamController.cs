@@ -43,118 +43,23 @@ namespace LAPTOP.Controllers
 
             return View(sanPham);
         }
-
-        // GET: SanPham/Create
-        public IActionResult Create()
+        // Tim Kiem San Pham
+        public async Task<IActionResult> TimKiem(string keyword)
         {
-            ViewData["MaLoai"] = new SelectList(_context.LoaiSanPhams, "MaLoai", "MaLoai");
-            return View();
-        }
-
-        // POST: SanPham/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaSp,TenSp,Gia,HinhAnh,SoLuongTon,GiaKhuyenMai,MaLoai,IsFeatured")] SanPham sanPham)
-        {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(keyword))
             {
-                _context.Add(sanPham);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["MaLoai"] = new SelectList(_context.LoaiSanPhams, "MaLoai", "MaLoai", sanPham.MaLoai);
-            return View(sanPham);
-        }
-
-        // GET: SanPham/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null || _context.SanPhams == null)
-            {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
-            var sanPham = await _context.SanPhams.FindAsync(id);
-            if (sanPham == null)
-            {
-                return NotFound();
-            }
-            ViewData["MaLoai"] = new SelectList(_context.LoaiSanPhams, "MaLoai", "MaLoai", sanPham.MaLoai);
-            return View(sanPham);
-        }
-
-        // POST: SanPham/Edit/5
-    
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaSp,TenSp,Gia,HinhAnh,SoLuongTon,GiaKhuyenMai,MaLoai,IsFeatured")] SanPham sanPham)
-        {
-            if (id != sanPham.MaSp)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(sanPham);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SanPhamExists(sanPham.MaSp))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["MaLoai"] = new SelectList(_context.LoaiSanPhams, "MaLoai", "MaLoai", sanPham.MaLoai);
-            return View(sanPham);
-        }
-
-        // GET: SanPham/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.SanPhams == null)
-            {
-                return NotFound();
-            }
-
-            var sanPham = await _context.SanPhams
+            var results = await _context.SanPhams
                 .Include(s => s.LoaiSanPham)
-                .FirstOrDefaultAsync(m => m.MaSp == id);
-            if (sanPham == null)
-            {
-                return NotFound();
-            }
+                .Where(s => s.TenSp != null && s.TenSp.Contains(keyword))
+                .ToListAsync();
 
-            return View(sanPham);
+            ViewBag.Keyword = keyword;
+            return View("Index",results);
         }
 
-        // POST: SanPham/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            if (_context.SanPhams == null)
-            {
-                return Problem("Entity set 'STORELAPTOPContext.SanPhams'  is null.");
-            }
-            var sanPham = await _context.SanPhams.FindAsync(id);
-            if (sanPham != null)
-            {
-                _context.SanPhams.Remove(sanPham);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
         private bool SanPhamExists(string id)
         {

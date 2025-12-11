@@ -8,6 +8,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Controllers\GioHangController.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<!-- Giữ tất cả package 10.x để tránh downgrade error -->
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Bcl.Cryptography" Version="10.0.0" />

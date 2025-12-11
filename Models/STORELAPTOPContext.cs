@@ -104,7 +104,7 @@ namespace LAPTOP.Models
                     .HasColumnName("MaHD")
                     .IsFixedLength();
                 entity.Property(e => e.MaKh)
-                    .HasMaxLength(8)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("MaKH")
                     .IsFixedLength();
@@ -136,7 +136,7 @@ namespace LAPTOP.Models
                 entity.HasIndex(e => e.Email).HasName("UQ_KhachHang_Email").IsUnique();
 
                 entity.Property(e => e.MaKh)
-                    .HasMaxLength(8)
+                    .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("MaKH")
                     .IsFixedLength();
@@ -223,7 +223,14 @@ namespace LAPTOP.Models
                 entity.HasOne(d => d.LoaiSanPham)
                       .WithMany(p => p.SanPhams)
                       .HasForeignKey(d => d.MaLoai)
-                      .HasConstraintName("FK_SanPham_LoaiSanPham"); 
+                      .HasConstraintName("FK_SanPham_LoaiSanPham");
+                modelBuilder.Entity<LoaiSanPham>().HasData(
+        new LoaiSanPham { MaLoai = 1, TenLoai = "Laptop Gaming" },
+        new LoaiSanPham { MaLoai = 2, TenLoai = "Laptop Văn Phòng" },
+        new LoaiSanPham { MaLoai = 3, TenLoai = "Macbook - Apple" },
+        new LoaiSanPham { MaLoai = 4, TenLoai = "Laptop Đồ Họa" },
+        new LoaiSanPham { MaLoai = 5, TenLoai = "Phụ Kiện" }
+    );
             });
 
             

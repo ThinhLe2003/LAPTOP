@@ -1,0 +1,75 @@
+﻿@model List<LAPTOP.Models.GioHangItem>
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center fw-bold">XÁC NHẬN ĐƠN HÀNG</h2>
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin người mua</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Checkout" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Họ tên</label>
+                            <input type="text" name="HoTenNN" class="form-control" value="@ViewBag.TenKH"  />
+                           
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" name="SdtNN" class="form-control" value="@ViewBag.SDT"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email (Để nhận hóa đơn)</label>
+                            <input type="email" name="Email" class="form-control" value="@ViewBag.Email" required placeholder="vidu@gmail.com" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ giao hàng mặc định</label>
+                            <textarea name="DiaChiNN" class="form-control" rows="3">@ViewBag.DiaChi</textarea>
+                            
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea name="GhiChu" class="form-control" rows="2" placeholder="Lưu ý cho shop (sẽ báo qua điện thoại)"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
+                            ĐẶT HÀNG NGAY
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Đơn hàng của bạn</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush mb-3">
+                        @foreach (var item in Model)
+                        {
+                            <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0">@item.TenSp</h6>
+                                    <small class="text-muted">SL: @item.SoLuong x @string.Format("{0:N0}", item.Gia)</small>
+                                </div>
+                                <span class="text-muted">@string.Format("{0:N0}", item.ThanhTien)</span>
+                            </li>
+                        }
+                        <li class="list-group-item d-flex justify-content-between bg-light">
+                            <span class="fw-bold">TỔNG TIỀN (VNĐ)</span>
+                            <strong class="text-danger">@string.Format("{0:N0} ₫", ViewBag.TongTien)</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

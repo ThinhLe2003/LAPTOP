@@ -1,34 +1,31 @@
 ﻿@model IEnumerable<LAPTOP.Models.SanPham>
-    @{
+@{
     ViewData["Title"] = "Quản Lý Sản Phẩm";
     Layout = "_AdminLayout";
-    }
+}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-danger"><i class="bi bi-box-seam"></i> @ViewData["Title"] (@Model.Count() sản phẩm)</h2>
-        <a asp-action="Create" class="btn btn-success btn-lg shadow">
-            <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
-        </a>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-danger"><i class="bi bi-box-seam"></i> @ViewData["Title"] (@Model.Count() sản phẩm)</h2>
+    <a asp-action="Create" class="btn btn-success btn-lg shadow">
+        <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
+    </a>
+</div>
 
-    <!-- Bảng sản phẩm -->
-    <div class="card shadow-sm">
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover align-middle mb-0">
-                <thead class="table-dark">
-                    <tr>
-                        <th>@Html.DisplayNameFor(m => m.TenSp)</th>
-                        <th>@Html.DisplayNameFor(m => m.Gia)</th>
-                        <th>Ảnh</th>
-                        <th>@Html.DisplayNameFor(m => m.SoLuongTon)</th>
-                        <th>Giá KM</th>
-                        <th>Flash Sale</th>
-                        <th>Loại SP</th>
-                        <th class="text-center">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m.TenSp)</th>
+                    <th>@Html.DisplayNameFor(m => m.Gia)</th>
+                    <th>Ảnh</th>
+                    <th>@Html.DisplayNameFor(m => m.SoLuongTon)</th>
+                    <th>Loại SP</th>
+                    <th class="text-center">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
                 {
                     <tr class="@(item.SoLuongTon <= 5 ? "table-warning" : "")">
                         <td class="fw-bold">@item.TenSp</td>
@@ -38,43 +35,19 @@
                         </td>
                         <td class="text-center fw-bold @(item.SoLuongTon <= 5 ? "text-danger" : "")">
                             @item.SoLuongTon
-                            @(item.SoLuongTon <= 5 ? "<br><small>Sắp hết!</small>" : "")
-                        </td>
-                        <td>
-                            @if (item.GiaKhuyenMai.HasValue && item.GiaKhuyenMai < item.Gia)
-                            {
-                            <span class="badge bg-red text-white">
-                                @string.Format("{0:N0}", item.GiaKhuyenMai) ₫
-                            </span>
-                            <br /><small class="text-success fw-bold">
-                                -@Math.Round((double)((item.Gia - item.GiaKhuyenMai.Value) / item.Gia * 100))%
-                            </small>
-                            }
-                            else
-                            {
-                            <span class="text-muted">—</span>
-                            }
-                        </td>
-                        <td class="text-center">
-                            @if (item.IsFeatured == true)
-                            {
-                            <span class="badge bg-warning text-dark">HOT</span>
-                            }
-                            else
-                            {
-                            <span class="badge bg-secondary">Bình thường</span>
-                            }
+                            @(item.SoLuongTon <= 5 ? Html.Raw("<br><small>Sắp hết!</small>") : "")
                         </td>
 
-                       
+                      
+
                         <td>
                             @if (item.LoaiSanPham != null)
                             {
-                            <span class="badge bg-primary fs-6">@item.LoaiSanPham.TenLoai</span>
+                                <span class="badge bg-primary fs-6">@item.LoaiSanPham.TenLoai</span>
                             }
                             else
                             {
-                            <span class="badge bg-secondary">Chưa chọn loại</span>
+                                <span class="badge bg-secondary">Chưa chọn loại</span>
                             }
                         </td>
 
@@ -91,7 +64,7 @@
                         </td>
                     </tr>
                 }
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
+</div>

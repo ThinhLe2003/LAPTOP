@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.DataProtection;
 using StackExchange.Redis;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +63,12 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardLimit = 2;
 });
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login"; // Đường dẫn trang đăng nhập
+        options.AccessDeniedPath = "/Account/AccessDenied"; // Đường dẫn khi không có quyền
+    });
 var app = builder.Build();
 
 // DÒNG ĐẦU TIÊN SAU Build

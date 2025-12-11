@@ -19,20 +19,13 @@ namespace LAPTOP.Controllers
             _context = context;
         }
 
-        // Chuyển từ "IActionResult" sang "async Task<IActionResult>"
+       
         public async Task<IActionResult> Index(string hang)
         {
-            var laptops = _context.SanPhams.AsQueryable();
+            var sanPhams = await _context.SanPhams.Include(p => p.LoaiSanPham).ToListAsync();
 
-            if (!string.IsNullOrEmpty(hang))
-            {
-                laptops = laptops.Where(sp => sp.TenSp.Contains(hang));
-                ViewBag.HangChon = hang;
-            }
-
-           
-            var model = await laptops.ToListAsync();
-            return View(model);
+         
+            return View(sanPhams);
         }
 
         public IActionResult Privacy() => View();

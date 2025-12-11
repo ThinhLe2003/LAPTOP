@@ -17,73 +17,77 @@
 </head>
 <body>
 
-    <!-- Top Bar Đỏ -->
-    <div class="bg-red text-white text-center small py-2 fw-bold d-none d-md-block top-bar-info">
-        <div class="container d-flex justify-content-between flex-wrap">
-            <span>Hotline: 0903 344 188 | 0909 344 188</span>
-            <span>617 Đường 3 Tháng 2, P.8, Quận 10, TP.HCM</span>
-        </div>
-    </div>
+    <!-- HEADER ĐỎ + MENU ĐEN LIỀN MẠCH, NỀN ĐỎ KHÔNG CHE MENU – GIỐNG 100% WEBSITE GỐC -->
+    <div class="bg-red shadow-lg sticky-top">
+        <!-- Nền đỏ bọc phần header -->
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between flex-wrap py-3 gap-3">
+                <!-- Logo -->
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/img/logo laptopshop.png" alt="Laptop Xách Tay Shop" style="height: 62px;">
+                </a>
 
-    <!-- Header + Menu -->
-    <header class="bg-white shadow-sm sticky-top">
-        <div class="container py-3">
-            <div class="row align-items-center">
-                <div class="col-4 col-md-3">
-                    <a asp-controller="Home" asp-action="Index">
-                        <img src="~/img/logo laptopshop.png" alt="Logo" style="max-width: 160px; height: auto;" class="img-fluid">
-                    </a>
-                </div>
-                <div class="col-md-6 my-2 my-md-0">
-                    <form class="d-flex">
-                        <input type="search" class="form-control rounded-start-pill shadow-sm"
-                               placeholder="Tìm kiếm sản phẩm..." style="height:50px">
-                        <button class="btn btn-red rounded-end-pill px-4">
+                <!-- Search bar -->
+                <form class="flex-grow-1 mx-md-4" style="max-width: 580px;" asp-controller="SanPham" asp-action="TimKiem">
+                    <div class="position-relative">
+                        <input type="search" name="keyword" class="form-control search-input" value="@ViewBag.Keyword"
+                               placeholder="Gõ tên hoặc model máy để tìm !"
+                               style="height: 50px; border-radius: 30px; padding-right: 60px;">
+                        <button type="submit" class="position-absolute end-0 top-50 translate-middle-y btn bg-dark text-white"
+                                style="width: 46px; height: 46px; border-radius: 50%; margin-right: 4px;">
                             <i class="bi bi-search"></i>
                         </button>
-                    </form>
-                </div>
-                <div class="col-8 col-md-3 text-end">
-                    <a asp-controller="GioHang" asp-action="Index" class="text-dark me-4 position-relative">
-                        <i class="bi bi-cart3 fs-3"></i>
-                        <span class="badge bg-red rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+                    </div>
+                </form>
+
+                <!-- Hotline + Địa chỉ + Giỏ hàng -->
+                <div class="d-flex align-items-center gap-4 text-white">
+                    <div class="text-end">
+                        <i class="bi bi-telephone-fill fs-4"></i>
+                        <span class="ms-2 fw-bold" style="font-size: 1.5rem;">0901234567</span><br>
+                        <small style="opacity: 0.9;">0123456789</small>
+                    </div>
+                    <div class="text-end d-none d-lg-block">
+                        <i class="bi bi-geo-alt-fill fs-4"></i>
+                        <span class="ms-2">180 Cao Lỗ, phường Chánh Hưng, HCM</span>
+                    </div>
+                    <a asp-controller="GioHang" asp-action="Index" class="position-relative text-white">
+                        <i class="bi bi-cart3 fs-2"></i>
+                        <span class="badge bg-white text-red rounded-pill position-absolute top-0 start-100 translate-middle" style="font-size: 0.7rem;">0</span>
                     </a>
-                    <span class="text-red fw-bold d-block d-md-inline">0909 344 188</span>
                 </div>
             </div>
         </div>
-
-        <!-- Menu chính -->
-        <nav class="bg-black text-white d-none d-lg-block position-relative overflow-hidden">
-            <div class="shine-effect"></div>
-            <div class="container py-3">
-                <div class="d-flex justify-content-center gap-5 flex-wrap">
-                    @{
-                        var menus = new (string Text, string Url, string Badge)[]
-                        {
-                            ("LAPTOP", "", ""),
-                            ("GAMING", "gaming", "RTX 50"),
-                            ("ĐỒ HỌA", "do-hoa", "HOT"),
-                            ("VĂN PHÒNG", "van-phong", "DƯỚI 10TR"),
-                            ("MACBOOK", "macbook", "M4 NEW"),
-                            ("TIN TỨC", "tin-tuc", "")
-                        };
-                    }
-                    @foreach (var m in menus)
+    </div>
+    <!-- Kết thúc nền đỏ -->
+    <!-- Thanh menu đen dính sát ngay dưới phần đỏ, không bị nền đỏ che -->
+    <nav class="bg-black text-white position-relative overflow-hidden" style="margin-top: -1px;">
+        <div class="shine-effect"></div>
+        <div class="container d-flex justify-content-center align-items-center gap-5 py-3 flex-wrap">
+            @{
+                var menus = new (string Text, string Url, string Badge)[]
+                {
+            ("LAPTOP",      "",          ""),
+            ("GAMING",      "gaming",    "RTX 50"),
+            ("ĐỒ HỌA",      "do-hoa",    "HOT"),
+            ("VĂN PHÒNG",   "van-phong", "DƯỚI 10TR"),
+            ("MACBOOK",     "macbook",   "M4 NEW"),
+            ("TIN TỨC",     "tin-tuc",   "")
+                };
+            }
+            @foreach (var m in menus)
+            {
+                <a asp-controller="SanPham" asp-action="Index" asp-route-loai="@m.Url"
+                   class="text-white text-decoration-none menu-glow text-uppercase fw-bold">
+                    @m.Text
+                    @if (!string.IsNullOrEmpty(m.Badge))
                     {
-                    <a asp-controller="SanPham" asp-action="Index" asp-route-loai="@m.Url"
-                       class="text-white text-decoration-none fw-bold fs-5 menu-glow">
-                        @m.Text
-                        @if (!string.IsNullOrEmpty(m.Badge))
-                            {
-                        <span class="badge bg-danger ms-2">@m.Badge</span>
-                            }
-                    </a>
+                        <span class="badge bg-danger ms-2" style="font-size: 0.7rem;">@m.Badge</span>
                     }
-                </div>
-            </div>
-        </nav>
-    </header>
+                </a>
+            }
+        </div>
+    </nav>
 
     <main class="min-vh-100 pt-4">
         <div class="container">
@@ -101,10 +105,27 @@
                 <div class="col-md-3 text-center text-md-end">
                     <h6 class="fw-bold">HOTLINE: 0909 344 188</h6>
                     <p class="small">Hỗ trợ 24/7</p>
-                    <div class="d-flex gap-3 justify-content-center justify-content-md-end mt-3">
-                        <a href="#" class="text-white fs-4"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="text-white fs-4"><i class="bi bi-messenger"></i></a>
-                        <a href="#" class="text-white fs-4"><i class="bi bi-youtube"></i></a>
+                    <div class="container d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="/" class="text-white fs-4 text-decoration-none">LAPTOPSHOP</a>
+                        </div>
+                        <div class="social-icons">
+                            <!-- TikTok -->
+                            @{
+                                var tiktokUrl= "https://www.tiktok.com/@hoangthjnh2408";
+                            }
+                            <a href="@tiktokUrl" class="text-white fs-4 me-2" target="_blank">
+                                <img src="~/img/icon_tiktok.png" alt="TikTok" style="width:24px;height:24px;" />
+                            </a>
+                            <!-- Facebook -->
+                            <a href="https://www.facebook.com/hoangthjnh2408" class="text-white fs-4 me-2" target="_blank">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <!-- Instagram -->
+                            <a href="https://www.instagram.com/doubleb.203/" class="text-white fs-4 me-2" target="_blank">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

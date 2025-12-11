@@ -1,0 +1,80 @@
+﻿@model LAPTOP.Models.ChiTietSanPham
+@{
+    Layout = "_AdminLayout";
+}
+
+<h4 class="mb-3">Thêm chi tiết sản phẩm</h4>
+<hr />
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <!-- Mã sản phẩm -->
+    <div class="mb-3">
+        <label asp-for="MaSp" class="form-label">Sản phẩm *</label>
+        <select asp-for="MaSp" class="form-control" asp-items="ViewBag.MaSp"></select>
+        <span asp-validation-for="MaSp" class="text-danger"></span>
+    </div>
+
+    <!-- CPU -->
+    <div class="mb-3">
+        <label asp-for="Cpu" class="form-label">CPU *</label>
+        <input asp-for="Cpu" class="form-control" />
+        <span asp-validation-for="Cpu" class="text-danger"></span>
+    </div>
+
+    <!-- RAM -->
+    <div class="mb-3">
+        <label asp-for="Ram" class="form-label">RAM *</label>
+        <input asp-for="Ram" class="form-control" />
+        <span asp-validation-for="Ram" class="text-danger"></span>
+    </div>
+
+    <!-- VGA -->
+    <div class="mb-3">
+        <label asp-for="Vga" class="form-label">Card đồ họa (VGA) *</label>
+        <input asp-for="Vga" class="form-control" />
+        <span asp-validation-for="Vga" class="text-danger"></span>
+    </div>
+
+    <!-- Màn hình -->
+    <div class="mb-3">
+        <label asp-for="ManHinh" class="form-label">Màn hình *</label>
+        <input asp-for="ManHinh" class="form-control" />
+        <span asp-validation-for="ManHinh" class="text-danger"></span>
+    </div>
+
+    <!-- Kích thước -->
+    <div class="mb-3">
+        <label asp-for="KichThuoc" class="form-label">Kích thước *</label>
+        <input asp-for="KichThuoc" class="form-control" />
+        <span asp-validation-for="KichThuoc" class="text-danger"></span>
+    </div>
+
+    <!-- Màu sắc -->
+    <div class="mb-3">
+        <label asp-for="MauSac" class="form-label">Màu sắc *</label>
+        <input asp-for="MauSac" class="form-control" />
+        <span asp-validation-for="MauSac" class="text-danger"></span>
+    </div>
+
+    <!-- Hệ điều hành -->
+    <div class="mb-3">
+        <label asp-for="HeDieuHanh" class="form-label">Hệ điều hành *</label>
+        <input asp-for="HeDieuHanh" class="form-control" />
+        <span asp-validation-for="HeDieuHanh" class="text-danger"></span>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Thêm chi tiết</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại danh sách</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

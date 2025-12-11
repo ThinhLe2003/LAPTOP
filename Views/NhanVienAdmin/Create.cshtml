@@ -72,6 +72,23 @@
                         <label asp-for="Luong" class="form-label">Lương cơ bản</label>
                         <input asp-for="Luong" class="form-control" placeholder="8,500,000" />
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Tài khoản đăng nhập</label>
+                        <input name="UserName" class="form-control" placeholder="nv01" required />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Mật khẩu</label>
+                        <input name="Password" type="password" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Quyền (Role)</label>
+                        <select asp-for="Role" class="form-select">
+                            <option value="Admin">Admin</option>
+                            <option value="Staff">Staff</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <div class="text-center mt-5">

@@ -32,7 +32,9 @@ namespace LAPTOP.Models
         public string? TenSp { get; set; }
         public decimal? Gia { get; set; }
 
-        public string? HinhAnh { get; set; }     
+        public string? HinhAnh { get; set; }
+        //[NotMapped]
+        //public IFormFile? HinhAnhFile { get; set; }
         public int SoLuongTon { get; set; }    
         public decimal? GiaKhuyenMai { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn loại sản phẩm")]

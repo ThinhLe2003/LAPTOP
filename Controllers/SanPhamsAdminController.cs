@@ -4,21 +4,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LAPTOP.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using StackExchange.Redis;
+using Microsoft.AspNetCore.Authorization;
+using System.Runtime.CompilerServices;
 
 namespace LAPTOP.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class SanPhamsAdminController : Controller
     {
         private readonly STORELAPTOPContext _context;
 
         public SanPhamsAdminController(STORELAPTOPContext context)
         {
+
             _context = context;
         }
-
+       
         // ===================== INDEX =====================
         public async Task<IActionResult> Index()
         {
+         
             var dsSanPham = await _context.SanPhams
                 .Include(s => s.LoaiSanPham)
                 .ToListAsync();
@@ -26,40 +32,47 @@ namespace LAPTOP.Controllers
         }
 
         // ===================== CREATE =====================
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
+          
             ViewBag.MaLoai = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai");
             return View();
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SanPham sp)
+       
+        public async Task<IActionResult> Create([Bind("TenSp,Gia,HinhAnh,SoLuongTon,GiaKhuyenMai,MaLoai,IsFeatured")] SanPham sanPham)
         {
-            sp.Gia ??= 0;
-            sp.GiaKhuyenMai ??= 0;
+           
 
-            
             ModelState.Remove("MaSp");
             ModelState.Remove("LoaiSanPham");
-            ModelState.Remove("ChiTietHoaDons");
+            ModelState.Remove("ChiTietSanPham");
+            ModelState.Remove("HoaDons");
+
+
 
             if (ModelState.IsValid)
             {
-                sp.MaSp = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
-                _context.SanPhams.Add(sp);
+              
+                sanPham.MaSp = Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+                _context.Add(sanPham);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.MaLoai = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai", sp.MaLoai);
-            return View(sp);
+            ViewData["MaLoai"] = new SelectList(_context.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
+            return View(sanPham);
         }
 
+
         // ===================== EDIT =====================
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
+           
             if (string.IsNullOrEmpty(id)) return NotFound();
 
             var sp = await _context.SanPhams.FindAsync(id);
@@ -73,6 +86,7 @@ namespace LAPTOP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] string id, SanPham sp)
         {
+           
             if (id != sp.MaSp)
                 return NotFound();
 
@@ -97,8 +111,10 @@ namespace LAPTOP.Controllers
         }
 
         // ===================== DELETE =====================
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
+           
             if (string.IsNullOrEmpty(id)) return NotFound();
 
             var sp = await _context.SanPhams
@@ -113,6 +129,7 @@ namespace LAPTOP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+           
             var sp = await _context.SanPhams.FindAsync(id);
             if (sp != null)
             {
@@ -137,14 +154,9 @@ namespace LAPTOP.Controllers
         }
         private bool SanPhamExists(string id)
         {
-            // _context là biến ApplicationDbContext bạn đã khai báo ở đầu Controller
-            // SanPhams là tên bảng trong DbContext
-            // e.Id là khóa chính của bảng SanPham (nếu bạn đặt tên khác ví dụ MaSP thì sửa lại nhé)
+         
             return (_context.SanPhams?.Any(e => e.MaSp == id)).GetValueOrDefault();
         }
-        public IActionResult Test()
-        {
-            return Content($"Scheme: {Request.Scheme}<br>Host: {Request.Host}<br>IsHttps: {Request.IsHttps}");
-        }
+       
     }
 }

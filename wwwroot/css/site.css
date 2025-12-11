@@ -1,8 +1,14 @@
-﻿
+﻿/* =======================================================
+   SITE.CSS - Toàn bộ style cho Laptop Xách Tay Shop
+   Ghi chú chi tiết từng phần
+   ======================================================= */
 
-/* ==== CƠ BẢN ==== */
+/* ====================== CƠ BẢN ====================== */
 :root {
     --red: #E31C2B;
+    --red-main: #d10000;
+    --red-dark: #a30000;
+    --red-light: #ff2e2e;
     --black: #000;
     --dark: #1A1A1A;
     --gray: #666;
@@ -14,14 +20,35 @@ body {
     background-color: var(--light-gray);
     color: #333;
     margin: 0;
-  
 }
 
-/* ==== HEADER & MENU ==== */
-.bg-red {
-    background: var(--red) !important;
+/* ====================== TOP BAR (THÔNG TIN NGẮN) ====================== */
+.top-bar-red {
+    background: linear-gradient(90deg, #d10000, #b00000);
+    color: #fff;
+    padding: 6px 0;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
+    .top-bar-red i {
+        font-size: 15px;
+        color: #ffeded;
+    }
+
+.top-bar-item {
+    opacity: .9;
+    transition: 0.25s;
+    cursor: default;
+}
+
+    .top-bar-item:hover {
+        opacity: 1;
+        transform: translateY(-1px);
+    }
+
+/* ====================== CHUNG TEXT VÀ BUTTON ====================== */
 .text-red {
     color: var(--red) !important;
 }
@@ -30,6 +57,7 @@ body {
     background: var(--red);
     border: none;
     color: white !important;
+    transition: 0.25s;
 }
 
     .btn-red:hover {
@@ -37,36 +65,116 @@ body {
         color: white !important;
     }
 
-/* Hiệu ứng gạch chân + hover menu */
-.menu-glow {
-    position: relative;
-    overflow: hidden;
-    padding: 0.5rem 1rem;
-    transition: all 0.4s ease;
-    text-shadow: 0 0 10px rgba(255,255,255,0.2);
+/* ====================== LOGO ====================== */
+/* ===== HEADER CONTAINER ===== */
+.header-container {
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+.bg-red {
+    background: linear-gradient(90deg, #d10000, #b00000);
+    color: white;
 }
 
-    .menu-glow::after {
+    /* ===== LOGO ===== */
+    .header-container img {
+        max-width: 130px;
+        height: auto;
+        transition: transform 0.25s;
+    }
+
+        .header-container img:hover {
+            transform: scale(1.05);
+        }
+
+/* ===== SEARCH FORM ===== */
+.search-form {
+    flex: 1;
+    max-width: 450px;
+    display: flex;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    height: 36px;
+    border-radius: 25px;
+    border: 2px solid #d10000;
+    padding: 0 40px 0 15px;
+    font-size: 14px;
+    transition: 0.25s;
+}
+
+    .search-input:focus {
+        outline: none;
+        border-color: #ff2e2e;
+        box-shadow: 0 0 6px rgba(209,0,0,0.4);
+    }
+
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 3px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: #d10000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.25s;
+}
+
+    .search-btn:hover {
+        background: #ff2e2e;
+    }
+
+/* ===== CART + PHONE ===== */
+.header-contact {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .header-contact .badge {
+        font-size: 0.7rem;
+    }
+
+/* ===== MENU ===== */
+nav.bg-black {
+    border-top: 2px solid #d10000;
+    border-bottom: 2px solid #d10000;
+}
+
+nav .menu-glow {
+    position: relative;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    nav .menu-glow::after {
         content: '';
         position: absolute;
         bottom: 0;
         left: 0;
         width: 0;
-        height: 4px;
-        background: var(--red);
-        transition: width 0.4s ease;
+        height: 3px;
+        background: #E31C2B;
+        transition: width 0.3s ease;
     }
 
-    .menu-glow:hover {
-        color: white !important;
-        transform: translateY(-3px);
+    nav .menu-glow:hover::after {
+        width: 100%;
     }
 
-        .menu-glow:hover::after {
-            width: 100%;
-        }
-
-/* Ánh sáng chạy ngang menu đen */
+/* Ánh sáng chạy ngang menu */
 .shine-effect {
     position: absolute;
     top: 0;
@@ -83,7 +191,35 @@ body {
     }
 }
 
-/* ==== SẢN PHẨM ==== */
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+    .header-container {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .search-form {
+        max-width: 100%;
+        margin: 8px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    nav.bg-black {
+        display: none; /* ẩn menu trên mobile */
+    }
+
+    .header-container img {
+        max-width: 110px;
+    }
+
+    .search-input {
+        font-size: 13px;
+    }
+}
+
+
+/* ====================== PRODUCT GRID ====================== */
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -113,16 +249,16 @@ body {
         padding: 10px;
     }
 
-    .product-card .card-title {
-        height: 3.2em;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
+.card-title {
+    height: 3.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
 
 .price {
     color: #e63946;
@@ -135,7 +271,7 @@ body {
     font-size: 0.9em;
 }
 
-/* Nút mua hàng hiện khi hover */
+/* Hover effect buttons/icons */
 .add-to-cart-btn {
     position: absolute;
     bottom: 0;
@@ -151,7 +287,6 @@ body {
     opacity: 1;
 }
 
-/* Icon mắt/tim hiện khi hover */
 .product-card .position-absolute.top-0.end-0,
 .product-card .position-absolute.top-0.start-0 {
     opacity: 0;
@@ -163,7 +298,7 @@ body {
     opacity: 1;
 }
 
-/* ==== CAROUSEL ==== */
+/* ====================== CAROUSEL ====================== */
 .carousel-inner img {
     height: 400px;
     object-fit: cover;
@@ -186,15 +321,15 @@ body {
     right: 20px;
 }
 
-/* ==== FOOTER & KHÁC ==== */
+/* ====================== FOOTER ====================== */
 footer a {
     color: var(--red);
     text-decoration: none;
 }
 
     footer a:hover {
-        text-decoration: underline;
         color: #c0101f;
+        text-decoration: underline;
     }
 
 .badge {
@@ -203,42 +338,20 @@ footer a {
     padding: 0.3em 0.6em;
 }
 
-/* Hover đỏ nổi bật */
 .hover-bg-red:hover {
     background: var(--red) !important;
     color: white !important;
 }
 
-    .hover-bg-red:hover i,
-    .hover-bg-red:hover span {
+    .hover-bg-red:hover i, .hover-bg-red:hover span {
         color: white !important;
     }
 
 .transition-all {
-    transition: all 0.3s ease;
+    transition: all 0.3s ease-in-out;
 }
 
-/* ==== RESPONSIVE ==== */
-@media (max-width: 992px) {
-    .offcanvas {
-        width: 300px !important;
-    }
-
-    body {
-        padding-top: 90px;
-    }
-}
-
-@media (max-width: 768px) {
-    .top-bar-info {
-        font-size: 0.8rem;
-    }
-
-    .product-grid {
-        gap: 20px;
-    }
-}
-/* ====================== DELETE CONFIRM PAGE - ĐẸP & CHUYÊN NGHIỆP ====================== */
+/* ====================== DELETE CONFIRM ====================== */
 .delete-confirm-container {
     max-width: 800px;
     margin: 40px auto;
@@ -255,17 +368,17 @@ footer a {
     text-align: center;
 }
 
-.delete-confirm-header h1 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-}
+    .delete-confirm-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+    }
 
-.delete-confirm-header p {
-    margin: 10px 0 0;
-    opacity: 0.95;
-    font-size: 1.1rem;
-}
+    .delete-confirm-header p {
+        margin: 10px 0 0;
+        opacity: 0.95;
+        font-size: 1.1rem;
+    }
 
 .delete-confirm-body {
     padding: 35px;
@@ -304,9 +417,9 @@ footer a {
     min-width: 200px;
 }
 
-.btn-delete-confirm:hover {
-    background: #c82333;
-}
+    .btn-delete-confirm:hover {
+        background: #c82333;
+    }
 
 .btn-cancel-confirm {
     background: #6c757d;
@@ -317,22 +430,12 @@ footer a {
     min-width: 200px;
 }
 
-.btn-cancel-confirm:hover {
-    background: #5a6268;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .delete-confirm-container {
-        margin: 20px 15px;
-        border-radius: 12px;
+    .btn-cancel-confirm:hover {
+        background: #5a6268;
     }
-    .delete-confirm-header h1 { font-size: 1.6rem; }
-    .delete-confirm-body { padding: 25px 20px; }
-    .delete-product-name { font-size: 1.3rem; }
-}
-/* ==================== NHANVIEN ADMIN - CRUD ==================== */
-.nhanvien-container {
+
+/* ====================== ADMIN (NHÂN VIÊN & KHÁCH HÀNG) ====================== */
+.admin-container {
     max-width: 900px;
     margin: 50px auto;
     background: white;
@@ -342,7 +445,7 @@ footer a {
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-.nhanvien-header {
+.admin-header {
     color: white;
     padding: 22px;
     text-align: center;
@@ -350,46 +453,47 @@ footer a {
     font-weight: 600;
 }
 
-    .nhanvien-header.create {
+    .admin-header.create {
         background: #198754;
     }
 
-    .nhanvien-header.edit {
+    .admin-header.edit {
         background: #ffc107;
         color: #212529;
     }
 
-    .nhanvien-header.delete {
+    .admin-header.delete {
         background: #dc3545;
     }
 
-    .nhanvien-header.details {
+    .admin-header.details {
         background: #0d6efd;
     }
 
-.nhanvien-body {
+.admin-body {
     padding: 35px;
 }
 
-.nhanvien-form .form-label {
+.admin-form .form-label {
     font-weight: 600;
     color: #495057;
 }
 
-.nhanvien-form .form-control,
-.nhanvien-form .form-select {
+.admin-form .form-control,
+.admin-form .form-select {
     border-radius: 8px;
     padding: 10px 14px;
 }
 
-.nhanvien-form .btn {
+.admin-form .btn {
     padding: 11px 32px;
     border-radius: 8px;
     font-weight: 600;
     min-width: 140px;
 }
+
 .btn-create-nv {
-    background: #198754 !important; /* xanh lá */
+    background: #198754 !important;
     color: white !important;
     border: none;
     padding: 11px 28px;
@@ -403,3 +507,41 @@ footer a {
         background: #157347 !important;
         color: white !important;
     }
+
+/* ====================== RESPONSIVE ====================== */
+@media (max-width: 992px) {
+    .offcanvas {
+        width: 300px !important;
+    }
+
+    body {
+        padding-top: 90px;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-bar-info {
+        font-size: 0.8rem;
+    }
+
+    .product-grid {
+        gap: 20px;
+    }
+
+    .delete-confirm-container {
+        margin: 20px 15px;
+        border-radius: 12px;
+    }
+
+    .delete-confirm-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .delete-confirm-body {
+        padding: 25px 20px;
+    }
+
+    .delete-product-name {
+        font-size: 1.3rem;
+    }
+}

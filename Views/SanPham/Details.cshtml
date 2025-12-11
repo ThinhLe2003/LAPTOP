@@ -1,69 +1,61 @@
-@model LAPTOP.Models.SanPham
+﻿    @model LAPTOP.Models.SanPham
 
-@{
-    Layout = null;
-}
+    @{
+        Layout = "_Layout";
+    }
 
-<!DOCTYPE html>
+    <!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Details</title>
+    </head>
+    <body>
 
-<div>
-    <h4>SanPham</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TenSp)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TenSp)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gia)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gia)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HinhAnh)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HinhAnh)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SoLuongTon)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SoLuongTon)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.GiaKhuyenMai)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.GiaKhuyenMai)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsFeatured)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsFeatured)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LoaiSanPham)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LoaiSanPham.MaLoai)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.MaSp">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-</body>
-</html>
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.TenSp)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.TenSp)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Gia)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Gia)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.HinhAnh)
+            </dt>
+            <dd class = "col-sm-10">
+               <img src="@Model.HinhAnh" alt="@Model.HinhAnh" style="max-width: 200px; height:auto;" class="img-thumbnail" />
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.SoLuongTon)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.SoLuongTon)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.GiaKhuyenMai)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.GiaKhuyenMai)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.LoaiSanPham)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.LoaiSanPham.TenLoai)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-controller="GioHang" asp-action="AddToCart" asp-route-id="@Model.MaSp" class="btn btn-danger">Thêm vào giỏ hàng</a>
+    </div>
+    </body>
+    </html>

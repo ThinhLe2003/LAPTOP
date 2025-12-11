@@ -1,48 +1,141 @@
-﻿@model List<LAPTOP.Models.GioHangItem>
+﻿@model IEnumerable<LAPTOP.Models.GioHangItem>
 
-<h2>Giỏ Hàng</h2>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Giỏ hàng</title>
 
-@if (!Model.Any())
-{
-    <p>Giỏ hàng trống!</p>
-}
-else
-{
-    <table class="table">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f8f8;
+            font-weight: bold;
+        }
+
+        .cart-img {
+            width: 100px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            display: block;
+            margin: auto;
+        }
+
+        form input[type="number"] {
+            width: 70px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        form button {
+            margin-top: 5px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: #fff;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .checkout-area {
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+
+</head>
+<body>
+
+    <h2>Giỏ hàng của bạn</h2>
+
+    <table>
         <thead>
             <tr>
-                <th>Sản phẩm</th>
+                <th>Tên sản phẩm</th>
+                <th>Hình ảnh</th>
                 <th>Giá</th>
                 <th>Số lượng</th>
                 <th>Thành tiền</th>
-                <th>Chi tiết</th>
+                <th>Xem</th>
                 <th>Xóa</th>
             </tr>
         </thead>
+
         <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.TenSp</td>
-                <td>@item.Gia.ToString("N0")</td>
-                <td>
-                    <form asp-action="UpdateQuantity" method="post">
-                        <input type="hidden" name="id" value="@item.MaSp" />
-                        <input type="number" name="soLuong" value="@item.SoLuong" min="1" />
-                        <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
-                    </form>
-                </td>
-                <td>@item.ThanhTien.ToString("N0")</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.MaSp" class="btn btn-info">Xem</a>
-                </td>
-                <td>
-                    <a asp-action="Remove" asp-route-id="@item.MaSp" class="btn btn-danger">Xóa</a>
-                </td>
-            </tr>
-        }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TenSp</td>
+
+                    <td>
+                        <img src="@item.HinhAnh" alt="@item.TenSp" class="cart-img" />
+                    </td>
+
+                    <td>@item.Gia.ToString("N0") ₫</td>
+
+                    <td>
+                        <form asp-action="UpdateQuantity" method="post">
+                            <input type="hidden" name="id" value="@item.MaSp" />
+                            <input type="number" name="soLuong" value="@item.SoLuong" min="1" />
+                            <button type="submit" class="btn btn-primary btn-sm">Cập nhật</button>
+                        </form>
+                    </td>
+
+                    <td>@item.ThanhTien.ToString("N0") ₫</td>
+
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.MaSp" class="btn btn-info">Xem</a>
+                    </td>
+
+                    <td>
+                        <a asp-action="Remove" asp-route-id="@item.MaSp" class="btn btn-danger">Xóa</a>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
+    <!--  NÚT THANH TOÁN -->
+    <div class="checkout-area">
+        <a asp-action="Checkout" class="btn btn-success" style="padding: 10px 20px; font-size: 16px;">
+            Thanh toán
+        </a>
+    </div>
 
-    <h4>Tổng tiền: @ViewBag.TongTien.ToString("N0")</h4>
-}
+</body>
+</html>

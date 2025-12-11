@@ -1,0 +1,104 @@
+﻿/* --- 1. THIẾT LẬP CHUNG --- */
+body {
+    overflow-x: hidden; /* Tránh thanh cuộn ngang khi menu trượt */
+}
+
+.admin-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh; /* Chiều cao full màn hình */
+}
+
+/* --- 2. SIDEBAR (THANH MENU) --- */
+.admin-sidebar {
+    width: 250px; /* Chiều rộng mặc định */
+    min-width: 250px;
+    background: linear-gradient(180deg, #212529, #343a40); /* Màu tối chuyên nghiệp */
+    color: #fff;
+    transition: all 0.3s ease-in-out; /* Hiệu ứng trượt mượt mà */
+    /* Cố định sidebar để nó không cuộn theo trang */
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+}
+
+    /* TRẠNG THÁI ĐÓNG: Khi có class .collapsed, đẩy sang trái để ẩn */
+    .admin-sidebar.collapsed {
+        margin-left: -250px;
+    }
+
+/* --- 3. NỘI DUNG CHÍNH --- */
+.admin-content {
+    width: 100%;
+    margin-left: 250px; /* Mặc định chừa chỗ cho sidebar */
+    transition: all 0.3s ease-in-out;
+    background-color: #f8f9fa; /* Màu nền xám nhạt cho nội dung */
+    min-height: 100vh;
+}
+
+    /* TRẠNG THÁI MỞ RỘNG: Khi sidebar đóng, nội dung tràn ra */
+    .admin-content.expanded {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+/* --- 4. MENU ITEMS --- */
+.sidebar-menu {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    border-left: 4px solid transparent; /* Thanh highlight bên trái */
+    transition: all 0.3s;
+    font-size: 15px;
+}
+
+    /* Hiệu ứng Hover và Active */
+    .sidebar-item:hover, .sidebar-item.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border-left-color: #0d6efd; /* Màu xanh dương nổi bật */
+        text-decoration: none;
+    }
+
+    .sidebar-item i {
+        font-size: 1.2rem;
+    }
+
+/* Footer Logout */
+.sidebar-footer a {
+    text-decoration: none;
+    color: #ff6b6b; /* Màu đỏ nhạt cho nút đăng xuất */
+    transition: 0.3s;
+}
+
+    .sidebar-footer a:hover {
+        color: #ff0000;
+        background-color: rgba(255,0,0,0.1);
+    }
+
+/* --- 5. RESPONSIVE (MOBILE) --- */
+@media (max-width: 768px) {
+    /* Trên điện thoại, mặc định ẩn sidebar */
+    .admin-sidebar {
+        margin-left: -250px;
+    }
+
+    .admin-content {
+        margin-left: 0;
+    }
+
+    /* Khi bật menu trên mobile (dùng class 'collapsed' ngược lại hoặc thêm class 'show-mobile' tùy JS) */
+    /* Với đoạn JS mình gửi, bạn cần sửa logic một chút nếu muốn chuẩn mobile, 
+       nhưng với CSS này, trên mobile nó sẽ ẩn, bấm nút nó sẽ hiện (nếu JS xóa margin-left) */
+}

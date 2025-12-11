@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LAPTOP.Models;
 
 namespace LAPTOP.Controllers
-{
+{   
     public class HoaDonAdminController : Controller
     {
         private readonly STORELAPTOPContext _context;
@@ -21,7 +21,10 @@ namespace LAPTOP.Controllers
         // GET: HoaDonAdmin
         public async Task<IActionResult> Index()
         {
-            var sTORELAPTOPContext = _context.HoaDons.Include(h => h.MaKhNavigation).Include(h => h.MaNvNavigation);
+            var sTORELAPTOPContext= _context.HoaDons
+                .Include(h =>  h.MaKhNavigation)
+                .Include (h => h.MaNvNavigation)
+                .OrderByDescending(h => h.NgayLap);
             return View(await sTORELAPTOPContext.ToListAsync());
         }
 
@@ -36,6 +39,8 @@ namespace LAPTOP.Controllers
             var hoaDon = await _context.HoaDons
                 .Include(h => h.MaKhNavigation)
                 .Include(h => h.MaNvNavigation)
+                .Include(h => h.ChiTietHoaDons)
+                .ThenInclude(ct => ct.MaSpNavigation)
                 .FirstOrDefaultAsync(m => m.MaHd == id);
             if (hoaDon == null)
             {
@@ -84,8 +89,16 @@ namespace LAPTOP.Controllers
             {
                 return NotFound();
             }
-            ViewData["MaKh"] = new SelectList(_context.KhachHangs, "MaKh", "MaKh", hoaDon.MaKh);
-            ViewData["MaNv"] = new SelectList(_context.NhanViens, "MaNv", "MaNv", hoaDon.MaNv);
+            
+            ViewData["MaNv"] = new SelectList(_context.NhanViens, "MaNv", "TenNv", hoaDon.MaNv);
+            ViewData["TrangThai"] = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Mới Đặt", Value = "0" },
+                new SelectListItem { Text = "Đang Xử Lý", Value = "1" },
+                new SelectListItem { Text = "Đang Giao", Value = "2" },
+                new SelectListItem { Text = "Đã Giao", Value = "3" },
+                new SelectListItem { Text = "Đã Hủy", Value = "4" }
+            }, "Value", "Text", hoaDon.TrangThai.ToString());
             return View(hoaDon);
         }
 
@@ -94,7 +107,7 @@ namespace LAPTOP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaHd,NgayLap,MaNv,MaKh")] HoaDon hoaDon)
+        public async Task<IActionResult> Edit(string id, [Bind("MaHd,NgayLap,MaNv,MaKh,TongTien,TrangThai")] HoaDon hoaDon)
         {
             if (id != hoaDon.MaHd)
             {
@@ -105,24 +118,25 @@ namespace LAPTOP.Controllers
             {
                 try
                 {
+                    // Logic tự động: Nếu đã chọn nhân viên thì đổi trạng thái sang "Đang xử lý"
+                    if (!string.IsNullOrEmpty(hoaDon.MaNv) && hoaDon.TrangThai == 0) // Giả sử 0 là Chờ xử lý
+                    {
+                        hoaDon.TrangThai = 1; // 1 là Đang xử lý
+                    }
+
                     _context.Update(hoaDon);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!HoaDonExists(hoaDon.MaHd))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!HoaDonExists(hoaDon.MaHd)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaKh"] = new SelectList(_context.KhachHangs, "MaKh", "MaKh", hoaDon.MaKh);
-            ViewData["MaNv"] = new SelectList(_context.NhanViens, "MaNv", "MaNv", hoaDon.MaNv);
+
+            // Nếu lỗi thì load lại danh sách nhân viên để hiện lại form
+            ViewData["MaNv"] = new SelectList( _context.NhanViens, "MaNv", "HoTen", hoaDon.MaNv);
             return View(hoaDon);
         }
 

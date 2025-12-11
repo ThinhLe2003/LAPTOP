@@ -46,3 +46,30 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+.search-form {
+    width: 40px; /* ban đầu chỉ hiển thị icon */
+    overflow: hidden;
+    transition: width 0.3s;
+}
+
+    .search-form:hover {
+        width: 100%; /* khi hover mở rộng */
+    }
+
+.search-input {
+    width: 100%;
+    border-radius: 50px 0 0 50px;
+    transition: all 0.3s;
+    opacity: 0;
+    padding-left: 10px;
+}
+
+.search-form:hover .search-input {
+    opacity: 1;
+    padding-left: 15px;
+}
+
+.search-btn {
+    border-radius: 0 50px 50px 0;
+}
+

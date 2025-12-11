@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Trang Quản Trị";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 fw-bold text-center">HỆ THỐNG QUẢN TRỊ LAPTOPSHOP</h2>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Sản Phẩm</h5>
+                    <p class="card-text fs-1 fw-bold">@ViewBag.SoLuongSanPham</p>
+                    <a asp-controller="SanPhamsAdmin" asp-action="Index" class="btn btn-light btn-sm w-100">Quản lý</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Đơn Hàng</h5>
+                    <p class="card-text fs-1 fw-bold">@ViewBag.SoLuongDonHang</p>
+                    <a asp-controller="HoaDonAdmin" asp-action="Index" class="btn btn-light btn-sm w-100">Quản lý</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Khách Hàng</h5>
+                    <p class="card-text fs-1 fw-bold text-dark">@ViewBag.SoLuongKhachHang</p>
+                    <a asp-controller="KhachHangAdmin" asp-action="Index" class="btn btn-light btn-sm w-100">Quản lý</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Menu Quản Lý</h4>
+    <div class="list-group">
+        <a asp-controller="SanPhamsAdmin" asp-action="Index" class="list-group-item list-group-item-action">
+            <i class="bi bi-laptop me-2"></i> Quản lý Sản Phẩm (Cơ bản)
+        </a>
+        <a asp-controller="ChiTietSanPhamsAdmin" asp-action="Index" class="list-group-item list-group-item-action">
+            <i class="bi bi-cpu me-2"></i> Quản lý Chi Tiết Kỹ Thuật (CPU, RAM...)
+        </a>
+        <a asp-controller="NhanVienAdmin" asp-action="Index" class="list-group-item list-group-item-action">
+            <i class="bi bi-people me-2"></i> Quản lý Nhân Viên
+        </a>
+    </div>
+</div>
