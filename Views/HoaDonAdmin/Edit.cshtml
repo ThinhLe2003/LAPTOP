@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Cập nhật đơn hàng";
-    Layout = "_AdminLayout.cshtml"; // Đảm bảo đường dẫn đúng
+    Layout = "_AdminLayout"; // Đảm bảo đường dẫn đúng
 }
 
 <div class="card shadow mb-4">
@@ -28,6 +28,8 @@
                     <div class="form-group">
                         <label class="control-label font-weight-bold">Khách hàng</label>
                         <select asp-for="MaKh" class="form-control" asp-items="ViewBag.MaKh" disabled></select>
+
+                        <input type="hidden" asp-for="MaKh" />
                     </div>
 
                     <div class="form-group">
@@ -50,10 +52,10 @@
                         <label asp-for="TrangThai" class="control-label font-weight-bold text-primary">Trạng thái đơn hàng</label>
                         <select asp-for="TrangThai" class="form-control">
                             <option value="0">Chờ xử lý</option>
-                            <option value="1">Đang xử lý (Đã phân công)</option>
+                            <option value="1">Đang xử lý</option>
                             <option value="2">Đang giao hàng</option>
-                            <option value="3">Hoàn tất</option>
-                            <option value="4">Hủy đơn</option>
+                            <option value="3">Đã Giao</option>
+                            <option value="4">Đã Hủy</option>
                         </select>
                         <span asp-validation-for="TrangThai" class="text-danger"></span>
                     </div>

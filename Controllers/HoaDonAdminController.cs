@@ -29,9 +29,9 @@ namespace LAPTOP.Controllers
         }
 
         // GET: HoaDonAdmin/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(string maHd)
         {
-            if (id == null || _context.HoaDons == null)
+            if (maHd == null || _context.HoaDons == null)
             {
                 return NotFound();
             }
@@ -41,7 +41,7 @@ namespace LAPTOP.Controllers
                 .Include(h => h.MaNvNavigation)
                 .Include(h => h.ChiTietHoaDons)
                 .ThenInclude(ct => ct.MaSpNavigation)
-                .FirstOrDefaultAsync(m => m.MaHd == id);
+                .FirstOrDefaultAsync(m => m.MaHd == maHd);
             if (hoaDon == null)
             {
                 return NotFound();
@@ -77,25 +77,26 @@ namespace LAPTOP.Controllers
         }
 
         // GET: HoaDonAdmin/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string maHd)
         {
-            if (id == null || _context.HoaDons == null)
+            if (maHd == null || _context.HoaDons == null)
             {
                 return NotFound();
             }
 
-            var hoaDon = await _context.HoaDons.FindAsync(id);
+            var hoaDon = await _context.HoaDons.FindAsync(maHd);
             if (hoaDon == null)
             {
                 return NotFound();
             }
             
             ViewData["MaNv"] = new SelectList(_context.NhanViens, "MaNv", "TenNv", hoaDon.MaNv);
+            ViewData["MaKh"] = new SelectList(_context.KhachHangs, "MaKh", "TenKh", hoaDon.MaKh);
             ViewData["TrangThai"] = new SelectList(new List<SelectListItem>
             {
-                new SelectListItem { Text = "Mới Đặt", Value = "0" },
+                new SelectListItem { Text = "Chờ xử lý", Value = "0" },
                 new SelectListItem { Text = "Đang Xử Lý", Value = "1" },
-                new SelectListItem { Text = "Đang Giao", Value = "2" },
+                new SelectListItem { Text = "Đang giao hàng", Value = "2" },
                 new SelectListItem { Text = "Đã Giao", Value = "3" },
                 new SelectListItem { Text = "Đã Hủy", Value = "4" }
             }, "Value", "Text", hoaDon.TrangThai.ToString());
@@ -107,9 +108,9 @@ namespace LAPTOP.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaHd,NgayLap,MaNv,MaKh,TongTien,TrangThai")] HoaDon hoaDon)
+        public async Task<IActionResult> Edit(string maHd, [Bind("MaHd,NgayLap,MaNv,MaKh,TongTien,TrangThai")] HoaDon hoaDon)
         {
-            if (id != hoaDon.MaHd)
+            if (maHd != hoaDon.MaHd)
             {
                 return NotFound();
             }
@@ -118,10 +119,10 @@ namespace LAPTOP.Controllers
             {
                 try
                 {
-                    // Logic tự động: Nếu đã chọn nhân viên thì đổi trạng thái sang "Đang xử lý"
-                    if (!string.IsNullOrEmpty(hoaDon.MaNv) && hoaDon.TrangThai == 0) // Giả sử 0 là Chờ xử lý
+                   
+                    if (!string.IsNullOrEmpty(hoaDon.MaNv) && hoaDon.TrangThai == 0) 
                     {
-                        hoaDon.TrangThai = 1; // 1 là Đang xử lý
+                        hoaDon.TrangThai = 1; 
                     }
 
                     _context.Update(hoaDon);
@@ -141,9 +142,9 @@ namespace LAPTOP.Controllers
         }
 
         // GET: HoaDonAdmin/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string maHd)
         {
-            if (id == null || _context.HoaDons == null)
+            if (maHd == null || _context.HoaDons == null)
             {
                 return NotFound();
             }
@@ -151,7 +152,7 @@ namespace LAPTOP.Controllers
             var hoaDon = await _context.HoaDons
                 .Include(h => h.MaKhNavigation)
                 .Include(h => h.MaNvNavigation)
-                .FirstOrDefaultAsync(m => m.MaHd == id);
+                .FirstOrDefaultAsync(m => m.MaHd == maHd);
             if (hoaDon == null)
             {
                 return NotFound();
@@ -163,13 +164,13 @@ namespace LAPTOP.Controllers
         // POST: HoaDonAdmin/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string maHd)
         {
             if (_context.HoaDons == null)
             {
                 return Problem("Entity set 'STORELAPTOPContext.HoaDons'  is null.");
             }
-            var hoaDon = await _context.HoaDons.FindAsync(id);
+            var hoaDon = await _context.HoaDons.FindAsync(maHd);
             if (hoaDon != null)
             {
                 _context.HoaDons.Remove(hoaDon);

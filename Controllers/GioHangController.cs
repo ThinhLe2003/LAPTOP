@@ -110,7 +110,6 @@ namespace LAPTOP.Controllers
                 ViewBag.SDT = khach.Sdt;
                 ViewBag.DiaChi = khach.DiaChi;
             }
-            ViewData["NhanVienList"]=new SelectList(_context.NhanViens, "MaNv", "TenNv");
             return View(gioHang); // Trả về View để khách điền thông tin
         }
 
@@ -165,7 +164,7 @@ namespace LAPTOP.Controllers
             // 3. Tạo Hóa Đơn
             var hoaDon = new HoaDon
             {
-                MaHd = DateTime.Now.ToString("ddMMyyyyHH:mm"), // Mã đơn: 20251212...
+                MaHd = "HD" + DateTime.Now.ToString("ddMMyyyyHHmmss"), // Mã đơn: 20251212...
                 NgayLap = DateTime.Now,
                 MaKh = khachHang.MaKh, // <--- Lấy mã từ khách hàng vừa xử lý
                 TongTien = gioHang.Sum(x => x.ThanhTien),

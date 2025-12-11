@@ -16,12 +16,12 @@
                     <form asp-action="Checkout" method="post">
                         <div class="mb-3">
                             <label class="form-label">Họ tên</label>
-                            <input type="text" name="HoTenNN" class="form-control" value="@ViewBag.TenKH"  />
+                            <input type="text" name="HoTen" class="form-control" value="@ViewBag.TenKH"  />
                            
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Số điện thoại</label>
-                            <input type="text" name="SdtNN" class="form-control" value="@ViewBag.SDT"/>
+                            <input type="text" name="Sdt" class="form-control" value="@ViewBag.SDT"/>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold">Email (Để nhận hóa đơn)</label>
@@ -29,7 +29,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Địa chỉ giao hàng mặc định</label>
-                            <textarea name="DiaChiNN" class="form-control" rows="3">@ViewBag.DiaChi</textarea>
+                            <textarea name="DiaChi" class="form-control" rows="3">@ViewBag.DiaChi</textarea>
                             
                         </div>
 
