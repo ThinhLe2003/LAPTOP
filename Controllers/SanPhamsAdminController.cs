@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Authorization;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace LAPTOP.Controllers
 {

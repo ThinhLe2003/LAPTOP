@@ -6,6 +6,13 @@ using StackExchange.Redis;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +31,7 @@ builder.Services.AddDbContext<STORELAPTOPContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 3. MVC + Session
+builder.Services.AddDistributedMemoryCache(); 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
