@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,27 +40,30 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
 });
 
 // 4. Redis + DataProtection (production only)
-if (!builder.Environment.IsDevelopment())
-{
-    var redisConn = builder.Configuration.GetValue<string>("redis_connection");
-    if (!string.IsNullOrEmpty(redisConn))
-    {
-        try
-        {
-            var redis = ConnectionMultiplexer.Connect(redisConn);
-            builder.Services.AddDataProtection()
-                .PersistKeysToStackExchangeRedis(redis, "my-app-keys")
-                .SetApplicationName("laptop-28fa");   // quan trọng nhất
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Redis connection failed: " + ex.Message);
-        }
-    }
-}
+//if (!builder.Environment.IsDevelopment())
+//{
+//    var redisConn = builder.Configuration.GetValue<string>("redis_connection");
+//    if (!string.IsNullOrEmpty(redisConn))
+//    {
+//        try
+//        {
+//            var redis = ConnectionMultiplexer.Connect(redisConn);
+//            builder.Services.AddDataProtection()
+//                .PersistKeysToStackExchangeRedis(redis, "my-app-keys")
+//                .SetApplicationName("laptop-28fa");   // quan trọng nhất
+//        }
+//        catch (Exception ex)
+//        {
+//            Console.WriteLine("Redis connection failed: " + ex.Message);
+//        }
+//    }
+//}
 
 // 5. Forwarded Headers – bắt buộc cho Render
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -114,5 +119,22 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+// Tự động Update Database khi ứng dụng khởi động
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<STORELAPTOPContext>();
+
+        // Lệnh này tương đương Update-Database
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Lỗi khi thực hiện Migration Database.");
+    }
+}
 
 app.Run();
