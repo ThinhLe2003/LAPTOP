@@ -35,6 +35,11 @@ builder.Services.AddDbContext<STORELAPTOPContext>(options =>
 // 3. MVC + Session
 builder.Services.AddDistributedMemoryCache(); 
 builder.Services.AddControllersWithViews();
+builder.Services.AddAntiforgery(options =>
+{
+    
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
