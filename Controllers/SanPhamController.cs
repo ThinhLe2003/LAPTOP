@@ -19,21 +19,18 @@ namespace LAPTOP.Controllers
         }
 
         // GET: SanPham
+        // Tên biến phải là 'maLoai' để khớp với 'asp-route-maLoai' bên View
         public async Task<IActionResult> Index(int? maLoai)
         {
-            // 1. Khởi tạo truy vấn
             var query = _context.SanPhams.Include(s => s.LoaiSanPham).AsQueryable();
 
-            // 2. Nếu người dùng chọn 1 loại cụ thể (maLoai có giá trị)
             if (maLoai.HasValue)
             {
-                // Lọc những sản phẩm có MaLoai bằng với cái người dùng bấm
+                // Lọc theo cột MaLoai (kiểu số)
                 query = query.Where(s => s.MaLoai == maLoai.Value);
             }
 
-            // 3. Thực thi và trả về View
-            var result = await query.ToListAsync();
-            return View(result);
+            return View(await query.ToListAsync());
         }
 
         // GET: SanPham/Details/5

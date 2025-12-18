@@ -65,19 +65,22 @@
         <div class="shine-effect"></div>
         <div class="container d-flex justify-content-center align-items-center gap-5 py-3 flex-wrap">
             @{
+                // SỬA Ở ĐÂY: Thay chữ bằng số ID (int) khớp với Database
                 var menus = new (string Text, int? Id, string Badge)[]
                 {
-            ("TẤT CẢ",      null, ""),  
-            ("GAMING",      1,    "RTX 50"), 
-            ("VĂN PHÒNG",   2,    "DƯỚI 10TR"),
-            ("MACBOOK",     3,    "M4 NEW"), 
-            ("ĐỒ HỌA",      4,    "HOT"), 
-            ("PHỤ KIỆN",    5,    "")    
+            ("TẤT CẢ",      null, ""),  // null = Hiện tất cả
+            ("GAMING",      1,    "RTX 50"), // ID 1 = Laptop Gaming
+            ("ĐỒ HỌA",      4,    "HOT"),    // ID 4 = Laptop Đồ họa
+            ("VĂN PHÒNG",   2,    "DƯỚI 10TR"), // ID 2 = Laptop Văn phòng
+            ("MACBOOK",     3,    "M4 NEW"), // ID 3 = Macbook
+            ("PHỤ KIỆN",    5,    "SALE")    // ID 5 = Phụ Kiện
                 };
             }
+
             @foreach (var m in menus)
             {
-                <a asp-controller="SanPham" asp-action="Index" asp-route-loai="@m.Id"
+                @* QUAN TRỌNG: asp-route-maLoai (phải trùng tên tham số bên Controller) *@
+                <a asp-controller="SanPham" asp-action="Index" asp-route-maLoai="@m.Id"
                    class="text-white text-decoration-none menu-glow text-uppercase fw-bold">
                     @m.Text
                     @if (!string.IsNullOrEmpty(m.Badge))
