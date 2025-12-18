@@ -147,7 +147,7 @@ namespace LAPTOP.Controllers
             if (string.IsNullOrEmpty(id)) return NotFound();
 
             var sp = await _context.SanPhams
-                .Include(s => s.LoaiSanPham)
+                .Include(s => s.ChiTietSanPham)
                 .FirstOrDefaultAsync(s => s.MaSp == id);
 
             if (sp == null) return NotFound();

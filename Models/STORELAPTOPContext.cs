@@ -38,7 +38,7 @@ namespace LAPTOP.Models
                     .HasName("PK__ChiTietH__F557F661D651EF0C");
                 entity.ToTable("ChiTietHoaDon");
                 entity.Property(e => e.MaHd)
-                    .HasMaxLength(8)
+                    
                     .IsUnicode(false)
                     .HasColumnName("MaHD")
                     .IsFixedLength();
@@ -72,19 +72,7 @@ namespace LAPTOP.Models
                     .IsUnicode(false)
                     .HasColumnName("MaSP")
                     .IsFixedLength();
-                entity.Property(e => e.Cpu)
-                    .HasMaxLength(50)
-                    .HasColumnName("CPU");
-                entity.Property(e => e.HeDieuHanh).HasMaxLength(50);
-                entity.Property(e => e.KichThuoc).HasMaxLength(50);
-                entity.Property(e => e.ManHinh).HasMaxLength(50);
-                entity.Property(e => e.MauSac).HasMaxLength(50);
-                entity.Property(e => e.Ram)
-                    .HasMaxLength(50)
-                    .HasColumnName("RAM");
-                entity.Property(e => e.Vga)
-                    .HasMaxLength(50)
-                    .HasColumnName("VGA");
+                
                 entity.HasOne(d => d.MaSpNavigation)
                     .WithOne(p => p.ChiTietSanPham)
                     .HasForeignKey<ChiTietSanPham>(d => d.MaSp)
@@ -99,7 +87,6 @@ namespace LAPTOP.Models
                     .HasName("PK__HoaDon__2725A6E0F36B725F");
                 entity.ToTable("HoaDon");
                 entity.Property(e => e.MaHd)
-                    .HasMaxLength(8)
                     .IsUnicode(false)
                     .HasColumnName("MaHD")
                     .IsFixedLength();

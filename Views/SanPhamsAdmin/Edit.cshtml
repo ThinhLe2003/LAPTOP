@@ -1,53 +1,49 @@
-@model LAPTOP.Models.SanPham
+﻿@model LAPTOP.Models.SanPham
 
 @{
-    ViewData["Title"] = "Edit";
     Layout = "_AdminLayout";
 }
+<h4 class="mb-3">Sửa sản phẩm:</h4>
 
-<h1>Edit</h1>
 
-<h4>SanPham</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MaSp" />
-            <div class="form-group">
-                <label asp-for="TenSp" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="TenSp" class="form-label">Sản phẩm*</label>
                 <input asp-for="TenSp" class="form-control" />
                 <span asp-validation-for="TenSp" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Gia" class="control-label"></label>
+                <label asp-for="Gia" class="form-label">Giá*</label>
                 <input asp-for="Gia" class="form-control" />
                 <span asp-validation-for="Gia" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HinhAnh" class="control-label"></label>
+                <label asp-for="HinhAnh" class="form-label">Hình ảnh*</label>
                 <input asp-for="HinhAnh" class="form-control" />
                 <span asp-validation-for="HinhAnh" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SoLuongTon" class="control-label"></label>
+                <label asp-for="SoLuongTon" class="form-label">Số lượng tồn*</label>
                 <input asp-for="SoLuongTon" class="form-control" />
                 <span asp-validation-for="SoLuongTon" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MaLoai" class="control-label"></label>
+                <label asp-for="MaLoai" class="form-label">Mã loại*</label>
                 <select asp-for="MaLoai" class="form-control" asp-items="ViewBag.MaLoai"></select>
                 <span asp-validation-for="MaLoai" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success">Save</button>
+                <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại danh sách</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 

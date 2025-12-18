@@ -1,75 +1,40 @@
-@model LAPTOP.Models.ChiTietSanPham
+﻿@model LAPTOP.Models.ChiTietSanPham
 
 @{
+    ViewData["Title"] = @Model.MaSpNavigation.TenSp;
    Layout = "_AdminLayout";
 }
+<div class="container mt-4">
+     <div class="row">
+         <h1 class="fw-bold text-primary">@Model.MaSpNavigation.TenSp</h1>
+          <h4 class="card-header bg-light fw-bold">Thông số kỹ thuật của máy:</h4>
+          <div class="card shadow-sm mb-4">
+        <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="bi bi-cpu-fill me-2"></i> CPU: @Model.Cpu
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-memory me-2"></i> RAM: @Model.Ram
+                        </li>
+                        <li class="list-group-item">
+                         <i class="bi bi-palette me-2"></i> VGA: @Model.Vga
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-display me-2"></i> Màn hình: @Model.ManHinh
+                        </li>
+                         <li class="list-group-item">
+                           <i class="bi bi-palette me-2"></i> Cổng giao tiếp: @Model.KichThuoc
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-palette me-2"></i> Pin: @Model.MauSac
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-battery-half me-2"></i> Trọng lượng: @Model.HeDieuHanh
+                            </li>
+                    </ul>
+                    </div>
 
-<!DOCTYPE html>
+    </div>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại danh sách</a>
+</div>  
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-
-<div>
-    <h4>ChiTietSanPham</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cpu)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cpu)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ram)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ram)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Vga)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Vga)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ManHinh)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ManHinh)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.KichThuoc)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.KichThuoc)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MauSac)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MauSac)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HeDieuHanh)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HeDieuHanh)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaSpNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaSpNavigation.MaSp)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.MaSp">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-</body>
-</html>

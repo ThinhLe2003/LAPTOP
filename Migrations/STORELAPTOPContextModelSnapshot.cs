@@ -25,9 +25,8 @@ namespace LAPTOP.Migrations
             modelBuilder.Entity("LAPTOP.Models.ChiTietHoaDon", b =>
                 {
                     b.Property<string>("MaHd")
-                        .HasMaxLength(8)
                         .IsUnicode(false)
-                        .HasColumnType("char(8)")
+                        .HasColumnType("char(50)")
                         .HasColumnName("MaHD")
                         .IsFixedLength();
 
@@ -62,35 +61,25 @@ namespace LAPTOP.Migrations
                         .IsFixedLength();
 
                     b.Property<string>("Cpu")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("CPU");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("HeDieuHanh")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("KichThuoc")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ManHinh")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("MauSac")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Ram")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("RAM");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Vga")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("VGA");
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("MaSp")
                         .HasName("PK__ChiTietS__2725081C6CDEC7DD");
@@ -101,9 +90,9 @@ namespace LAPTOP.Migrations
             modelBuilder.Entity("LAPTOP.Models.HoaDon", b =>
                 {
                     b.Property<string>("MaHd")
-                        .HasMaxLength(8)
+                        .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("char(8)")
+                        .HasColumnType("char(50)")
                         .HasColumnName("MaHD")
                         .IsFixedLength();
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LAPTOP.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class UpdateChiTietSP : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -89,7 +89,7 @@ namespace LAPTOP.Migrations
                 name: "HoaDon",
                 columns: table => new
                 {
-                    MaHD = table.Column<string>(type: "char(8)", unicode: false, fixedLength: true, maxLength: 8, nullable: false),
+                    MaHD = table.Column<string>(type: "char(50)", unicode: false, fixedLength: true, maxLength: 50, nullable: false),
                     NgayLap = table.Column<DateTime>(type: "date", nullable: true),
                     MaNV = table.Column<string>(type: "char(8)", unicode: false, fixedLength: true, maxLength: 8, nullable: true),
                     MaKH = table.Column<string>(type: "char(50)", unicode: false, fixedLength: true, maxLength: 50, nullable: true),
@@ -116,13 +116,13 @@ namespace LAPTOP.Migrations
                 columns: table => new
                 {
                     MaSP = table.Column<string>(type: "char(8)", unicode: false, fixedLength: true, maxLength: 8, nullable: false),
-                    CPU = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    RAM = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    VGA = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ManHinh = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    KichThuoc = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    MauSac = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    HeDieuHanh = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
+                    Cpu = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    Ram = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    Vga = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    ManHinh = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    KichThuoc = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    MauSac = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    HeDieuHanh = table.Column<string>(type: "nvarchar(255)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -138,7 +138,7 @@ namespace LAPTOP.Migrations
                 name: "ChiTietHoaDon",
                 columns: table => new
                 {
-                    MaHD = table.Column<string>(type: "char(8)", unicode: false, fixedLength: true, maxLength: 8, nullable: false),
+                    MaHD = table.Column<string>(type: "char(50)", unicode: false, fixedLength: true, nullable: false),
                     MaSP = table.Column<string>(type: "char(8)", unicode: false, fixedLength: true, maxLength: 8, nullable: false),
                     SoLuong = table.Column<int>(type: "int", nullable: true),
                     DonGia = table.Column<decimal>(type: "decimal(18,2)", nullable: true)

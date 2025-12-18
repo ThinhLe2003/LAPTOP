@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,10 +19,21 @@ namespace LAPTOP.Controllers
         }
 
         // GET: SanPham
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? maLoai)
         {
-            var sTORELAPTOPContext = _context.SanPhams.Include(s => s.LoaiSanPham);
-            return View(await sTORELAPTOPContext.ToListAsync());
+            // 1. Khởi tạo truy vấn
+            var query = _context.SanPhams.Include(s => s.LoaiSanPham).AsQueryable();
+
+            // 2. Nếu người dùng chọn 1 loại cụ thể (maLoai có giá trị)
+            if (maLoai.HasValue)
+            {
+                // Lọc những sản phẩm có MaLoai bằng với cái người dùng bấm
+                query = query.Where(s => s.MaLoai == maLoai.Value);
+            }
+
+            // 3. Thực thi và trả về View
+            var result = await query.ToListAsync();
+            return View(result);
         }
 
         // GET: SanPham/Details/5
@@ -35,12 +46,19 @@ namespace LAPTOP.Controllers
 
             var sanPham = await _context.SanPhams
                 .Include(s => s.LoaiSanPham)
+                .Include(s => s.ChiTietSanPham)
                 .FirstOrDefaultAsync(m => m.MaSp == id);
             if (sanPham == null)
             {
                 return NotFound();
             }
+            var sanPhamTuongTu = await _context.SanPhams
+          .Where(x => x.MaSp != id) // Trừ sản phẩm đang xem ra
+          .OrderBy(x => Guid.NewGuid()) // Sắp xếp ngẫu nhiên (hoặc xóa dòng này để lấy theo thứ tự)
+          .Take(4) // Lấy 4 cái
+          .ToListAsync();
 
+            ViewBag.SanPhamTuongTu = sanPhamTuongTu;
             return View(sanPham);
         }
         // Tim Kiem San Pham

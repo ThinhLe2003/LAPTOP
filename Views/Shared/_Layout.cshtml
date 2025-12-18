@@ -65,19 +65,19 @@
         <div class="shine-effect"></div>
         <div class="container d-flex justify-content-center align-items-center gap-5 py-3 flex-wrap">
             @{
-                var menus = new (string Text, string Url, string Badge)[]
+                var menus = new (string Text, int? Id, string Badge)[]
                 {
-            ("LAPTOP",      "",          ""),
-            ("GAMING",      "gaming",    "RTX 50"),
-            ("ĐỒ HỌA",      "do-hoa",    "HOT"),
-            ("VĂN PHÒNG",   "van-phong", "DƯỚI 10TR"),
-            ("MACBOOK",     "macbook",   "M4 NEW"),
-            ("TIN TỨC",     "tin-tuc",   "")
+            ("TẤT CẢ",      null, ""),  
+            ("GAMING",      1,    "RTX 50"), 
+            ("VĂN PHÒNG",   2,    "DƯỚI 10TR"),
+            ("MACBOOK",     3,    "M4 NEW"), 
+            ("ĐỒ HỌA",      4,    "HOT"), 
+            ("PHỤ KIỆN",    5,    "")    
                 };
             }
             @foreach (var m in menus)
             {
-                <a asp-controller="SanPham" asp-action="Index" asp-route-loai="@m.Url"
+                <a asp-controller="SanPham" asp-action="Index" asp-route-loai="@m.Id"
                    class="text-white text-decoration-none menu-glow text-uppercase fw-bold">
                     @m.Text
                     @if (!string.IsNullOrEmpty(m.Badge))
