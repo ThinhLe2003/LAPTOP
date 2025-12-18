@@ -48,8 +48,11 @@
                         <small style="opacity: 0.9;">0123456789</small>
                     </div>
                     <div class="text-end d-none d-lg-block">
-                        <i class="bi bi-geo-alt-fill fs-4"></i>
-                        <span class="ms-2">180 Cao Lỗ, phường Chánh Hưng, HCM</span>
+                        <a href="https://www.google.com/maps/place/180+Cao+L%E1%BB%97,+Ph%C6%B0%E1%BB%9Dng+4,+Qu%E1%BA%ADn+8,+Th%C3%A0nh+ph%E1%BB%91+H%E1%BB%93+Ch%C3%AD+Minh+70000,+Vi%E1%BB%87t+Nam/"
+                           target="_blank"
+                           class="text-decoration-none text-white ms-3">
+                            <i class="bi bi-geo-alt-fill me-1"></i> 180 Cao Lỗ, phường Chánh Hưng, HCM
+                        </a>
                     </div>
                     <a asp-controller="GioHang" asp-action="Index" class="position-relative text-white">
                         <i class="bi bi-cart3 fs-2"></i>
@@ -69,9 +72,9 @@
                 var menus = new (string Text, int? Id, string Badge)[]
                 {
             ("TẤT CẢ",      null, ""),  // null = Hiện tất cả
-            ("GAMING",      1,    "RTX 50"), // ID 1 = Laptop Gaming
+            ("GAMING",      1,    ""), // ID 1 = Laptop Gaming
             ("ĐỒ HỌA",      4,    "HOT"),    // ID 4 = Laptop Đồ họa
-            ("VĂN PHÒNG",   2,    "DƯỚI 10TR"), // ID 2 = Laptop Văn phòng
+            ("VĂN PHÒNG",   2,    ""), // ID 2 = Laptop Văn phòng
             ("MACBOOK",     3,    "M4 NEW"), // ID 3 = Macbook
             ("PHỤ KIỆN",    5,    "SALE")    // ID 5 = Phụ Kiện
                 };
