@@ -16,6 +16,7 @@ builder.Services.AddDbContext<STORELAPTOPContext>(options =>
 
 // 2. Cache (Dùng RAM nội bộ thay vì Redis)
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHttpContextAccessor();
 
 // 3. Session
 builder.Services.AddSession(options =>

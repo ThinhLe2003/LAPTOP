@@ -1,4 +1,20 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@using LAPTOP.Helpers
+@using LAPTOP.Models
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    // LOGIC TÍNH SỐ LƯỢNG GIỎ HÀNG (ĐÃ SỬA)
+    int soLuongGioHang = 0;
+    if (HttpContextAccessor.HttpContext.Session.Keys.Contains("GioHang"))
+    {
+        var gioHang = HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<GioHangItem>>("GioHang");
+        if (gioHang != null)
+        {
+            soLuongGioHang = gioHang.Sum(item => item.SoLuong);
+        }
+    }
+}
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -43,9 +59,9 @@
                 <!-- Hotline + Địa chỉ + Giỏ hàng -->
                 <div class="d-flex align-items-center gap-4 text-white">
                     <div class="text-end">
-                        <i class="bi bi-telephone-fill fs-4"></i>
-                        <span class="ms-2 fw-bold" style="font-size: 1.5rem;">0901234567</span><br>
-                        <small style="opacity: 0.9;">0123456789</small>
+                        <a href="tel:090123456789" class="text-decoration-none text-light fw-bold fs-5">
+                            <i class="bi bi-telephone-fill me-2"></i>090123456789
+                        </a>
                     </div>
                     <div class="text-end d-none d-lg-block">
                         <a href="https://www.google.com/maps/place/180+Cao+L%E1%BB%97,+Ph%C6%B0%E1%BB%9Dng+4,+Qu%E1%BA%ADn+8,+Th%C3%A0nh+ph%E1%BB%91+H%E1%BB%93+Ch%C3%AD+Minh+70000,+Vi%E1%BB%87t+Nam/"
@@ -54,9 +70,23 @@
                             <i class="bi bi-geo-alt-fill me-1"></i> 180 Cao Lỗ, phường Chánh Hưng, HCM
                         </a>
                     </div>
-                    <a asp-controller="GioHang" asp-action="Index" class="position-relative text-white">
-                        <i class="bi bi-cart3 fs-2"></i>
-                        <span class="badge bg-white text-red rounded-pill position-absolute top-0 start-100 translate-middle" style="font-size: 0.7rem;">0</span>
+                    <a asp-controller="GioHang" asp-action="Index" class="position-relative text-white text-decoration-none">
+                    <i class="bi bi-cart3 fs-2"></i>
+
+                    @if (soLuongGioHang > 0)
+                    {
+                        <span class="badge bg-white text-danger rounded-pill position-absolute top-0 start-100 translate-middle fw-bold"
+                              style="font-size: 0.7rem; border: 2px solid #dc3545;">
+                            @soLuongGioHang
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary rounded-pill position-absolute top-0 start-100 translate-middle"
+                              style="font-size: 0.7rem;">
+                            0
+                        </span>
+                    }
                     </a>
                 </div>
             </div>
