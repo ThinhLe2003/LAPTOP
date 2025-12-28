@@ -11,6 +11,11 @@
         <i class="bi bi-plus-circle"></i> Tạo đơn thủ công
     </a>
 </div>
+<div class="mb-3">
+    <a asp-action="ThongKe" class="btn btn-warning shadow-sm">
+        <i class="bi bi-pie-chart-fill"></i> Xem Thống Kê Doanh Thu
+    </a>
+</div>
 
 <div class="card mb-3 shadow-sm border-0">
     <div class="card-body">
@@ -92,7 +97,6 @@
                                 <span class="badge bg-danger">Đã hủy</span>
                             }
                         </td>
-e
                         <td>
                             @(item.MaNvNavigation?.TenNv ?? "---")
                         </td>

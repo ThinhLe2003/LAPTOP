@@ -237,7 +237,7 @@ namespace LAPTOP.Controllers
             string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
             return Redirect(paymentUrl);
         }
-
+        [HttpGet]
         public IActionResult PaymentCallback()
         {
             var vnpayData = Request.Query;
@@ -262,20 +262,18 @@ namespace LAPTOP.Controllers
             {
                 if (vnp_ResponseCode == "00")
                 {
-                    // THANH TOÁN THÀNH CÔNG -> CẬP NHẬT DATABASE
                     var hoaDon = _context.HoaDons.FirstOrDefault(h => h.MaHd == maHd);
                     if (hoaDon != null)
                     {
-                        hoaDon.TrangThai = 1; // 1: Đã thanh toán
+                        hoaDon.TrangThai = 1;
                         _context.SaveChanges();
                     }
 
-                    ViewBag.Message = $"Thanh toán thành công đơn hàng {maHd}";
+                    return RedirectToAction("Success");
                 }
                 else
                 {
                     ViewBag.Message = $"Giao dịch thất bại. Mã lỗi: {vnp_ResponseCode}";
-                    // Có thể xóa đơn hàng hoặc đổi trạng thái thành "Hủy" nếu muốn
                 }
             }
             else
@@ -284,6 +282,7 @@ namespace LAPTOP.Controllers
             }
 
             return View();
+
         }
     }
 }

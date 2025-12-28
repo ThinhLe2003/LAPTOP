@@ -1,0 +1,90 @@
+﻿@{
+    ViewData["Title"] = "Thống kê doanh thu";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <h2 style="color: blue; font-weight: bold; margin-bottom: 20px;">
+        <i class="bi bi-bar-chart-line"></i> BÁO CÁO THỐNG KÊ
+    </h2>
+
+    <div class="card" style="border: 1px solid black; margin-bottom: 20px;">
+        <div class="card-header" style="background-color: #eee; font-weight: bold;">
+            Lọc theo thời gian
+        </div>
+        <div class="card-body">
+            <form asp-action="ThongKe" method="get">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Từ ngày:</label>
+                        <input type="date" name="tuNgay" class="form-control" value="@ViewBag.TuNgay" />
+                    </div>
+                    <div class="col-md-4">
+                        <label>Đến ngày:</label>
+                        <input type="date" name="denNgay" class="form-control" value="@ViewBag.DenNgay" />
+                    </div>
+                    <div class="col-md-4" style="display: flex; align-items: flex-end;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            Xem kết quả
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <div class="alert alert-success" style="border: 2px solid green; text-align: center;">
+                <h4>TỔNG DOANH THU (Đơn thành công)</h4>
+                <h1 style="color: red; font-weight: bold;">
+                    @string.Format("{0:N0} đ", ViewBag.DoanhThu)
+                </h1>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3" style="border: 1px solid #333;">
+                <div class="card-header">Chờ xử lý (0)</div>
+                <div class="card-body">
+                    <h3 class="card-title text-center text-dark">@ViewBag.SoDonChoXuLy</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3" style="border: 1px solid #333;">
+                <div class="card-header">Đang xử lý (1)</div>
+                <div class="card-body">
+                    <h3 class="card-title text-center">@ViewBag.SoDonDangXuLy</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-secondary mb-3" style="border: 1px solid #333;">
+                <div class="card-header">Đang giao (2)</div>
+                <div class="card-body">
+                    <h3 class="card-title text-center">@ViewBag.SoDonDangGiao</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3" style="border: 1px solid #333;">
+                <div class="card-header">Thành công (3)</div>
+                <div class="card-body">
+                    <h3 class="card-title text-center">@ViewBag.SoDonDaGiao</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3" style="border: 1px solid #333;">
+                <div class="card-header">Đã hủy (4)</div>
+                <div class="card-body">
+                    <h3 class="card-title text-center">@ViewBag.SoDonDaHuy</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+</div>

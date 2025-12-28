@@ -155,7 +155,7 @@ namespace LAPTOP.Controllers
             {
                 try
                 {
-                    // [LOGIC XỬ LÝ TỰ ĐỘNG - VIẾT KIỂU ĐƠN GIẢN]
+                  
                     // Kiểm tra: Nếu đã chọn nhân viên (MaNv không rỗng) VÀ Trạng thái đang là 0 (Chờ xử lý)
                     if (!string.IsNullOrEmpty(hoaDon.MaNv) && hoaDon.TrangThai == 0)
                     {
@@ -232,6 +232,49 @@ namespace LAPTOP.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+        // 6. TRANG THỐNG KÊ (MỚI THÊM)
+        // ============================================================
+        // Code kiểu sinh viên: Query DB nhiều lần cho từng loại trạng thái
+        // Thay vì dùng GroupBy phức tạp, mình đếm thủ công từng cái
+        public async Task<IActionResult> ThongKe(DateTime? tuNgay, DateTime? denNgay)
+        {
+            // 1. Lấy dữ liệu gốc (Chưa execute)
+            var query = _context.HoaDons.AsQueryable();
+
+            // 2. Nếu có chọn ngày lọc thì thêm điều kiện
+            if (tuNgay.HasValue)
+            {
+                query = query.Where(h => h.NgayLap >= tuNgay.Value);
+            }
+            if (denNgay.HasValue)
+            {
+                // Cộng thêm 1 ngày để lấy trọn vẹn ngày cuối cùng
+                query = query.Where(h => h.NgayLap < denNgay.Value.AddDays(1));
+            }
+
+            // 3. Tính toán số liệu (Dùng ViewBag truyền qua View cho nhanh)
+
+            // Đếm số đơn theo từng trạng thái (Magic number: 0,1,2,3,4)
+            ViewBag.SoDonChoXuLy = await query.Where(h => h.TrangThai == 0).CountAsync();
+            ViewBag.SoDonDangXuLy = await query.Where(h => h.TrangThai == 1).CountAsync();
+            ViewBag.SoDonDangGiao = await query.Where(h => h.TrangThai == 2).CountAsync();
+            ViewBag.SoDonDaGiao = await query.Where(h => h.TrangThai == 3).CountAsync();
+            ViewBag.SoDonDaHuy = await query.Where(h => h.TrangThai == 4).CountAsync();
+
+            // Tính doanh thu: Chỉ tính những đơn ĐÃ GIAO (Trạng thái = 3)
+            // Dùng hàm Sum để cộng cột TongTien
+            var doanhThu = await query
+                                .Where(h => h.TrangThai == 3)
+                                .SumAsync(h => h.TongTien);
+
+            ViewBag.DoanhThu = doanhThu;
+
+            // Giữ lại giá trị ngày để hiện lại trên Form nhập
+            ViewBag.TuNgay = tuNgay?.ToString("yyyy-MM-dd");
+            ViewBag.DenNgay = denNgay?.ToString("yyyy-MM-dd");
+
+            return View();
         }
 
         private bool HoaDonExists(string id)
