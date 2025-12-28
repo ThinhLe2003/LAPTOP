@@ -3,103 +3,123 @@
 @{
     ViewData["Title"] = "Chi tiết đơn hàng";
     Layout = "_AdminLayout";
+
+    // Biến tính tiền thủ công
+    decimal tongTienTuTinh = 0;
 }
 
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary"><i class="bi bi-receipt-cutoff"></i> Chi Tiết Đơn Hàng #@Model.MaHd</h2>
-        <a asp-action="Index" class="btn btn-secondary shadow">
-            <i class="bi bi-arrow-left"></i> Quay lại danh sách
-        </a>
-    </div>
+    <h2 style="color: blue; font-weight: bold;">CHI TIẾT ĐƠN HÀNG #@Model.MaHd</h2>
+    <br />
+    <a asp-action="Index" class="btn btn-secondary">
+        << Quay lại danh sách
+    </a>
+    <hr />
 
     <div class="row">
         <div class="col-md-4">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-info text-white fw-bold">
-                    <i class="bi bi-person-lines-fill"></i> Thông tin khách hàng
+            <div class="card" style="border: 1px solid black; margin-bottom: 20px;">
+                <div class="card-header" style="background-color: #00cccc; color: white;">
+                    THÔNG TIN KHÁCH HÀNG
                 </div>
                 <div class="card-body">
-                    <p><strong>Khách hàng:</strong> @(Model.MaKhNavigation?.TenKh ?? "Khách vãng lai")</p>
-                    <p><strong>Số điện thoại:</strong> @(Model.MaKhNavigation?.Sdt ?? "---")</p>
-                    <p><strong>Ngày đặt hàng:</strong> @Model.NgayLap?.ToString("dd/MM/yyyy HH:mm")</p>
                     <p>
-                        <strong>Trạng thái:</strong>
+                        Khách hàng:
+                        <b>@(Model.MaKhNavigation?.TenKh ?? "Khách vãng lai")</b>
+                    </p>
+
+                    <p>SĐT: @(Model.MaKhNavigation?.Sdt ?? "---")</p>
+
+                    <p>Ngày đặt: @Model.NgayLap?.ToString("dd/MM/yyyy")</p>
+
+                    <p>
+                        Trạng thái:
                         @if (Model.TrangThai == 0)
                         {
-                            <span class="badge bg-warning text-dark">Mới đặt</span>
+                            <span style="color: red; font-weight: bold;">Mới đặt (0)</span>
                         }
                         else if (Model.TrangThai == 1)
                         {
-                            <span class="badge bg-info">Đang giao</span>
+                            <span style="color: blue; font-weight: bold;">Đang xử lý (1)</span>
                         }
                         else if (Model.TrangThai == 2)
                         {
-                            <span class="badge bg-success">Hoàn thành</span>
+                            <span style="color: orange; font-weight: bold;">Đang giao (2)</span>
+                        }
+                        else if (Model.TrangThai == 3)
+                        {
+                            <span style="color: green; font-weight: bold;">Đã giao (3)</span>
                         }
                         else
                         {
-                            <span class="badge bg-danger">Đã hủy</span>
+                            <span style="color: grey;">Đã hủy</span>
                         }
                     </p>
                 </div>
             </div>
-
         </div>
 
         <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white fw-bold">
-                    <i class="bi bi-cart-check"></i> Danh sách sản phẩm
+            <div class="card" style="border: 1px solid black;">
+                <div class="card-header" style="background-color: blue; color: white;">
+                    DANH SÁCH SẢN PHẨM MUA
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr style="background-color: #eee;">
+                            <th>Tên sản phẩm</th>
+                            <th>Hình ảnh</th>
+                            <th>SL</th>
+                            <th>Giá</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ChiTietHoaDons)
+                        {
+                            int soLuong=item.SoLuong ?? 0; 
+                            decimal donGia=item.DonGia ?? 0;
+                            
+                            decimal thanhTien=soLuong * donGia;
+                            tongTienTuTinh += thanhTien;
+
                             <tr>
-                                <th>Sản phẩm</th>
-                                <th class="text-center">Số lượng</th>
-                                <th class="text-end">Đơn giá</th>
-                                <th class="text-end">Thành tiền</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.ChiTietHoaDons)
-                            {
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            @if (item.MaSpNavigation != null)
-                                            {
-                                                <img src="@item.MaSpNavigation.HinhAnh" alt="sp" style="width: 50px; height: 50px; object-fit: contain;" class="me-2 border rounded">
-                                                <div>
-                                                    <span class="fw-bold text-dark">@item.MaSpNavigation.TenSp</span>
-                                                    <br><small class="text-muted">Mã SP: @item.MaSp</small>
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <span>Sản phẩm đã bị xóa</span>
-                                            }
-                                        </div>
-                                    </td>
-                                    <td class="text-center fw-bold">@item.SoLuong</td>
-                                    <td class="text-end">@string.Format("{0:N0} ₫", item.DonGia)</td>
-                                    <td class="text-end text-danger fw-bold">
-                                        @string.Format("{0:N0} ₫", item.SoLuong * item.DonGia)
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                        <tfoot class="table-light">
-                            <tr>
-                                <td colspan="3" class="text-end fw-bold fs-5">TỔNG CỘNG:</td>
-                                <td class="text-end fw-bold fs-4 text-danger">
-                                    @string.Format("{0:N0} ₫", Model.TongTien)
+                                <td>
+                                    @if (item.MaSpNavigation != null)
+                                    {
+                                        <span>@item.MaSpNavigation.TenSp</span>
+                                        <br />
+                                        <i style="font-size: 12px;">(Mã: @item.MaSp)</i>
+                                    }
+                                    else
+                                    {
+                                        <span>SP đã xóa</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.MaSpNavigation != null)
+                                    {
+                                        <img src="@item.MaSpNavigation.HinhAnh" width="60" height="60" style="border: 1px solid #ccc;" />
+                                    }
+                                </td>
+                                <td style="text-align: center;">@item.SoLuong</td>
+                                <td>@string.Format("{0:N0}", item.DonGia)</td>
+                                <td style="color: red; font-weight: bold;">
+                                    @string.Format("{0:N0}", thanhTien)
                                 </td>
                             </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                        }
+                        <tr>
+                            <td colspan="4" style="text-align: right; font-weight: bold;">
+                                TỔNG CỘNG:
+                            </td>
+                            <td style="color: red; font-size: 20px; font-weight: bold;">
+                                @string.Format("{0:N0} đ", tongTienTuTinh)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

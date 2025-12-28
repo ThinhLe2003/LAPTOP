@@ -20,11 +20,13 @@ namespace LAPTOP.Controllers
         }
 
        
-        public async Task<IActionResult> Index(string hang)
+        public async Task<IActionResult> Index()
         {
-            var sanPhams = await _context.SanPhams.Include(p => p.LoaiSanPham).ToListAsync();
-
-         
+            var sanPhams = await _context.SanPhams
+                .Include(p => p.LoaiSanPham)
+                .OrderByDescending(p => p.MaSp)
+                .Take(8)
+                .ToListAsync();
             return View(sanPhams);
         }
 

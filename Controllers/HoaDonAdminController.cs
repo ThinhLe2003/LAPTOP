@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LAPTOP.Models;
 
 namespace LAPTOP.Controllers
-{   
+{
     public class HoaDonAdminController : Controller
     {
         private readonly STORELAPTOPContext _context;
@@ -18,17 +18,42 @@ namespace LAPTOP.Controllers
             _context = context;
         }
 
-        // GET: HoaDonAdmin
-        public async Task<IActionResult> Index()
+        // ============================================================
+        // 1. TRANG DANH SÁCH (INDEX)
+        // ============================================================
+        // Hàm này chạy khi bạn vào trang quản lý đơn hàng
+        // Tham số 'trangThai' nhận từ cái Dropdown lọc ở bên View
+        public async Task<IActionResult> Index(int? trangThai)
         {
-            var sTORELAPTOPContext= _context.HoaDons
-                .Include(h =>  h.MaKhNavigation)
-                .Include (h => h.MaNvNavigation)
-                .OrderByDescending(h => h.NgayLap);
-            return View(await sTORELAPTOPContext.ToListAsync());
+            // Bước 1: Lấy tất cả hóa đơn từ Database lên
+            // Include(MaNvNavigation): Để lấy được tên nhân viên
+           
+            var query = _context.HoaDons
+                .Include(h => h.MaNvNavigation)
+                .AsQueryable();
+
+            // Bước 2: Kiểm tra xem người dùng có chọn lọc trạng thái không?
+            // trangThai.HasValue nghĩa là có chọn 1 số nào đó (0, 1, 2...)
+            if (trangThai.HasValue)
+            {
+                // Lọc những đơn có cột TrangThai bằng đúng số đó
+                query = query.Where(h => h.TrangThai == trangThai.Value);
+            }
+
+            // Bước 3: Sắp xếp ngày lập giảm dần (đơn mới nhất lên đầu)
+            query = query.OrderByDescending(h => h.NgayLap);
+
+            // Bước 4: Lưu lại số trạng thái đang chọn vào ViewBag
+            // Để bên View nó biết mà giữ nguyên cái lựa chọn trên Dropdown (không bị reset về "Tất cả")
+            ViewBag.CurrentStatus = trangThai;
+
+            // Chạy câu lệnh SQL và trả về danh sách cho View hiển thị
+            return View(await query.ToListAsync());
         }
 
-        // GET: HoaDonAdmin/Details/5
+        // ============================================================
+        // 2. TRANG CHI TIẾT (DETAILS)
+        // ============================================================
         public async Task<IActionResult> Details(string maHd)
         {
             if (maHd == null || _context.HoaDons == null)
@@ -36,12 +61,14 @@ namespace LAPTOP.Controllers
                 return NotFound();
             }
 
+            // Kết nối nhiều bảng để lấy đầy đủ thông tin: Khách, Nhân viên, Chi tiết sp
             var hoaDon = await _context.HoaDons
-                .Include(h => h.MaKhNavigation)
-                .Include(h => h.MaNvNavigation)
-                .Include(h => h.ChiTietHoaDons)
-                .ThenInclude(ct => ct.MaSpNavigation)
+                .Include(h => h.MaKhNavigation) // Lấy tên khách
+                .Include(h => h.MaNvNavigation) // Lấy tên nhân viên
+                .Include(h => h.ChiTietHoaDons) // Lấy danh sách sản phẩm đã mua
+                .ThenInclude(ct => ct.MaSpNavigation) // Lấy tên sản phẩm trong danh sách đó
                 .FirstOrDefaultAsync(m => m.MaHd == maHd);
+
             if (hoaDon == null)
             {
                 return NotFound();
@@ -50,17 +77,17 @@ namespace LAPTOP.Controllers
             return View(hoaDon);
         }
 
-        // GET: HoaDonAdmin/Create
+        // ============================================================
+        // 3. TRANG TẠO MỚI (CREATE) - Ít dùng vì khách tự đặt là chính
+        // ============================================================
         public IActionResult Create()
         {
+            // Chuẩn bị dữ liệu cho Dropdown chọn Khách và Nhân viên
             ViewData["MaKh"] = new SelectList(_context.KhachHangs, "MaKh", "MaKh");
             ViewData["MaNv"] = new SelectList(_context.NhanViens, "MaNv", "MaNv");
             return View();
         }
 
-        // POST: HoaDonAdmin/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaHd,NgayLap,MaNv,MaKh")] HoaDon hoaDon)
@@ -76,7 +103,10 @@ namespace LAPTOP.Controllers
             return View(hoaDon);
         }
 
-        // GET: HoaDonAdmin/Edit/5
+        // ============================================================
+        // 4. TRANG CẬP NHẬT (EDIT) - QUAN TRỌNG NHẤT
+        // ============================================================
+        // Hàm này hiển thị Form để bạn sửa trạng thái hoặc phân công nhân viên
         public async Task<IActionResult> Edit(string maHd)
         {
             if (maHd == null || _context.HoaDons == null)
@@ -89,23 +119,29 @@ namespace LAPTOP.Controllers
             {
                 return NotFound();
             }
-            
+
+            // Load danh sách nhân viên để chọn người xử lý đơn
             ViewData["MaNv"] = new SelectList(_context.NhanViens, "MaNv", "TenNv", hoaDon.MaNv);
             ViewData["MaKh"] = new SelectList(_context.KhachHangs, "MaKh", "TenKh", hoaDon.MaKh);
-            ViewData["TrangThai"] = new SelectList(new List<SelectListItem>
-            {
-                new SelectListItem { Text = "Chờ xử lý", Value = "0" },
-                new SelectListItem { Text = "Đang Xử Lý", Value = "1" },
-                new SelectListItem { Text = "Đang giao hàng", Value = "2" },
-                new SelectListItem { Text = "Đã Giao", Value = "3" },
-                new SelectListItem { Text = "Đã Hủy", Value = "4" }
-            }, "Value", "Text", hoaDon.TrangThai.ToString());
+
+            // [CODE DỞ - THỦ CÔNG]: Tạo danh sách trạng thái bằng tay
+            // Thay vì dùng Enum, mình viết thẳng chữ và số ở đây.
+            // Nếu muốn sửa chữ "Chờ xử lý" thành "Đơn mới" thì phải đi sửa từng file -> Rất cực (đúng chất sinh viên)
+            var listTrangThai = new List<SelectListItem>();
+            listTrangThai.Add(new SelectListItem { Text = "Chờ xử lý (0)", Value = "0" });
+            listTrangThai.Add(new SelectListItem { Text = "Đang xử lý (1)", Value = "1" });
+            listTrangThai.Add(new SelectListItem { Text = "Đang giao (2)", Value = "2" });
+            listTrangThai.Add(new SelectListItem { Text = "Đã giao (3)", Value = "3" });
+            listTrangThai.Add(new SelectListItem { Text = "Đã hủy (4)", Value = "4" });
+
+            // Đưa danh sách này sang View để hiện lên cái Dropdown
+            // hoaDon.TrangThai.ToString() là để chọn sẵn trạng thái hiện tại của đơn
+            ViewData["TrangThai"] = new SelectList(listTrangThai, "Value", "Text", hoaDon.TrangThai.ToString());
+
             return View(hoaDon);
         }
 
-        // POST: HoaDonAdmin/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Hàm này chạy khi bạn bấm nút "Lưu" (Save)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string maHd, [Bind("MaHd,NgayLap,MaNv,MaKh,TongTien,TrangThai")] HoaDon hoaDon)
@@ -119,12 +155,16 @@ namespace LAPTOP.Controllers
             {
                 try
                 {
-                   
-                    if (!string.IsNullOrEmpty(hoaDon.MaNv) && hoaDon.TrangThai == 0) 
+                    // [LOGIC XỬ LÝ TỰ ĐỘNG - VIẾT KIỂU ĐƠN GIẢN]
+                    // Kiểm tra: Nếu đã chọn nhân viên (MaNv không rỗng) VÀ Trạng thái đang là 0 (Chờ xử lý)
+                    if (!string.IsNullOrEmpty(hoaDon.MaNv) && hoaDon.TrangThai == 0)
                     {
-                        hoaDon.TrangThai = 1; 
+                        // Thì tự động đổi trạng thái sang 1 (Đang xử lý)
+                        // Giúp admin đỡ phải bấm chọn thủ công
+                        hoaDon.TrangThai = 1;
                     }
 
+                    // Lưu thay đổi vào Database
                     _context.Update(hoaDon);
                     await _context.SaveChangesAsync();
                 }
@@ -133,15 +173,30 @@ namespace LAPTOP.Controllers
                     if (!HoaDonExists(hoaDon.MaHd)) return NotFound();
                     else throw;
                 }
+                // Lưu xong thì quay về trang danh sách
                 return RedirectToAction(nameof(Index));
             }
 
-            // Nếu lỗi thì load lại danh sách nhân viên để hiện lại form
-            ViewData["MaNv"] = new SelectList( _context.NhanViens, "MaNv", "HoTen", hoaDon.MaNv);
+            // [CODE DỞ - LẶP CODE]: Nếu lưu bị lỗi (ví dụ chưa điền gì đó)
+            // Thì phải load lại cái danh sách trạng thái y hệt như hàm Edit ở trên
+            // Lỗi của sinh viên là hay copy paste đoạn này thay vì viết hàm chung.
+            ViewData["MaNv"] = new SelectList(_context.NhanViens, "MaNv", "HoTen", hoaDon.MaNv);
+
+            var listTrangThai = new List<SelectListItem>();
+            listTrangThai.Add(new SelectListItem { Text = "Chờ xử lý (0)", Value = "0" });
+            listTrangThai.Add(new SelectListItem { Text = "Đang xử lý (1)", Value = "1" });
+            listTrangThai.Add(new SelectListItem { Text = "Đang giao (2)", Value = "2" });
+            listTrangThai.Add(new SelectListItem { Text = "Đã giao (3)", Value = "3" });
+            listTrangThai.Add(new SelectListItem { Text = "Đã hủy (4)", Value = "4" });
+
+            ViewData["TrangThai"] = new SelectList(listTrangThai, "Value", "Text", hoaDon.TrangThai.ToString());
+
             return View(hoaDon);
         }
 
-        // GET: HoaDonAdmin/Delete/5
+        // ============================================================
+        // 5. TRANG XÓA (DELETE)
+        // ============================================================
         public async Task<IActionResult> Delete(string maHd)
         {
             if (maHd == null || _context.HoaDons == null)
@@ -161,7 +216,6 @@ namespace LAPTOP.Controllers
             return View(hoaDon);
         }
 
-        // POST: HoaDonAdmin/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string maHd)
@@ -175,14 +229,14 @@ namespace LAPTOP.Controllers
             {
                 _context.HoaDons.Remove(hoaDon);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool HoaDonExists(string id)
         {
-          return (_context.HoaDons?.Any(e => e.MaHd == id)).GetValueOrDefault();
+            return (_context.HoaDons?.Any(e => e.MaHd == id)).GetValueOrDefault();
         }
     }
 }

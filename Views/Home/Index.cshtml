@@ -87,28 +87,32 @@
 
         <div class="row">
             @foreach (var sp in Model)
-            {
+          {
                 <div class="col-lg-3 col-md-4 col-6 mb-4">
                     <div class="card shadow-sm h-100 product-card">
-                        <img src="@sp.HinhAnh"
-                             class="card-img-top"
-                             alt="@sp.TenSp"
-                             style="height:200px; object-fit:contain; padding: 10px;">
+                        <div class="card h-100 shadow-sm">
+                            <a asp-controller="SanPham" asp-action="Details" asp-route-id="@sp.MaSp">
+                                <img src="@sp.HinhAnh" class="card-img-top" alt="@sp.TenSp">
+                            </a>
 
                         <div class="card-body text-center d-flex flex-column">
-                            <h6 class="card-title flex-grow-1">@sp.TenSp</h6>
+                                <h5 class="card-title">
+                                    <a asp-controller="SanPham" asp-action="Details" asp-route-id="@sp.MaSp" class="text-decoration-none text-dark">
+                                        @sp.TenSp
+                                    </a>
+                                </h5>
 
                             <p class="text-danger fw-bold fs-5">@string.Format("{0:N0} ₫", sp.Gia)</p>
 
-                            <a asp-controller="SanPham"
-                               asp-action="Details"
-                               asp-route-id="@sp.MaSp"
-                               class="btn btn-outline-primary btn-sm mt-auto">Xem chi tiết</a>
+                        
                         </div>
                     </div>
                 </div>
+                </div>
             }
+            
         </div>
+
     </div>
 
     <div class="row g-3">

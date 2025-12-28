@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LAPTOP.Models;
 using LAPTOP.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LAPTOP.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class NhanVienAdminController : Controller
     {
         private readonly STORELAPTOPContext _context;
@@ -20,6 +22,7 @@ namespace LAPTOP.Controllers
         }
 
         // GET: NhanVienAdmin
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
               return   _context.NhanViens != null ? 
@@ -28,6 +31,7 @@ namespace LAPTOP.Controllers
         }
 
         // GET: NhanVienAdmin/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null || _context.NhanViens == null)
@@ -46,6 +50,7 @@ namespace LAPTOP.Controllers
         }
 
         // GET: NhanVienAdmin/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -76,6 +81,7 @@ namespace LAPTOP.Controllers
         }
 
         // GET: NhanVienAdmin/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null || _context.NhanViens == null)
@@ -122,6 +128,7 @@ namespace LAPTOP.Controllers
 
 
         // GET: NhanVienAdmin/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null || _context.NhanViens == null)

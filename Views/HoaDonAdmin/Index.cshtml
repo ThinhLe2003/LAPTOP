@@ -6,10 +6,30 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-primary"><i class="bi bi-receipt"></i> @ViewData["Title"]</h2>
+    <h2 class="fw-bold text-primary"><i class="bi bi-receipt"></i> @ViewData["Title"] (@Model.Count() đơn hàng)</h2>
     <a asp-action="Create" class="btn btn-primary btn-lg shadow">
         <i class="bi bi-plus-circle"></i> Tạo đơn thủ công
     </a>
+</div>
+
+<div class="card mb-3 shadow-sm border-0">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label class="fw-bold">Lọc theo trạng thái:</label>
+            </div>
+            <div class="col-auto">
+                <select name="trangThai" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Tất cả trạng thái --</option>
+                    <option value="0" selected="@(ViewBag.CurrentStatus == 0)">Đơn mới (Chờ xử lý)</option>
+                    <option value="1" selected="@(ViewBag.CurrentStatus == 1)">Đang xử lý</option>
+                    <option value="2" selected="@(ViewBag.CurrentStatus == 2)">Đang giao hàng</option>
+                    <option value="3" selected="@(ViewBag.CurrentStatus == 3)">Đã giao thành công</option>
+                    <option value="4" selected="@(ViewBag.CurrentStatus == 4)">Đã hủy</option>
+                </select>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="card shadow-sm">
@@ -31,67 +51,60 @@
                 {
                     <tr>
                         <td class="fw-bold">@item.MaHd</td>
+                        <td>@item.NgayLap?.ToString("dd/MM/yyyy HH:mm")</td>
 
-                        <td>@item.NgayLap?.ToString("dd/MM/yyyy")</td>
-
-                       <td>
-                        @if (item.MaKhNavigation != null)
-                        {
-                        <div class="fw-bold text-primary">@item.MaKhNavigation.TenKh</div>
-        
-                        <div class="small text-muted">@item.MaKhNavigation.Sdt</div>
-
-                         <small class="badge bg-info text-dark mt-1">Thành viên</small>
-                             }
-                             else
-                                 {
-                           <span class="text-muted fst-italic">Khách vãng lai</span>
-                               }
-                            </td>
+                        <td>
+                            @if (item.MaKhNavigation != null)
+                            {
+                                <div class="fw-bold text-primary">@item.MaKhNavigation.TenKh</div>
+                                <div class="small text-muted">@item.MaKhNavigation.Sdt</div>
+                                <small class="badge bg-info text-dark mt-1">Thành viên</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted fst-italic">Khách vãng lai</span>
+                            }
+                        </td>
 
                         <td class="text-danger fw-bold">
-                            @* Giả sử bạn có cột TongTien, nếu chưa có thì tạm thời để trống hoặc tính sau *@
-                             @string.Format("{0:N0} ₫", item.TongTien) 
+                            @string.Format("{0:N0} ₫", item.TongTien)
                         </td>
 
                         <td>
-    @switch (item.TrangThai)
-    {
-        case 0:
-            <span class="badge bg-warning text-dark">Chờ xử lý</span>
-            break;
-        case 1:
-            <span class="badge bg-info text-dark">Đang xử lý</span>
-            break;
-        case 2:
-            <span class="badge bg-primary">Đang giao hàng</span>
-            break;
-        case 3:
-                        <span class="badge bg-success">Đã Giao</span>
-            break;
-        case 4:
-            <span class="badge bg-danger">Đã hủy</span>
-            break;
-        default:
-            <span class="badge bg-secondary">Không xác định</span>
-            break;
-    }
-</td>
-
+                            @if (item.TrangThai == 0)
+                            {
+                                <span class="badge bg-warning text-dark">Chờ xử lý</span>
+                            }
+                            else if (item.TrangThai == 1)
+                            {
+                                <span class="badge bg-primary">Đang xử lý</span>
+                            }
+                            else if (item.TrangThai == 2)
+                            {
+                                <span class="badge bg-info text-dark">Đang giao</span>
+                            }
+                            else if (item.TrangThai == 3)
+                            {
+                                <span class="badge bg-success">Đã giao</span>
+                            }
+                            else if (item.TrangThai == 4)
+                            {
+                                <span class="badge bg-danger">Đã hủy</span>
+                            }
+                        </td>
+e
                         <td>
                             @(item.MaNvNavigation?.TenNv ?? "---")
                         </td>
 
                         <td class="text-center">
-                         <a asp-action="Details" asp-route-maHd="@item.MaHd" class="btn btn-info btn-sm text-white" title="Xem chi tiết">
-                             <i class="bi bi-eye"></i>
-                         </a>
-    
-                          <a asp-action="Edit" asp-route-maHd="@item.MaHd" class="btn btn-warning btn-sm" title="Cập nhật trạng thái">
-                              <i class="bi bi-pencil"></i>
-                         </a>
-                          
-                            </td>
+                            <a asp-action="Details" asp-route-maHd="@item.MaHd" class="btn btn-info btn-sm text-white me-1" title="Xem chi tiết">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-maHd="@item.MaHd" class="btn btn-warning btn-sm" title="Cập nhật">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
                     </tr>
                 }
             </tbody>
